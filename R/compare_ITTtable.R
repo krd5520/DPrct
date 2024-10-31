@@ -55,7 +55,6 @@ compare_ITTdata=function(data.list,
   }
 
   if(include.ci.overlap==TRUE){
-    stopifnot((is.null(ci.overlap.ref.name)==FALSE)&&(ci.overlap.ref.name%in% unique(table.combine$data)))
     add.stars=FALSE
     include.df=TRUE
   }else{
