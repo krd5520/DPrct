@@ -1,11 +1,15 @@
 Package: DPrct
-Type: Package
-Title: What the Package Does (Title Case)
-Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
-Encoding: UTF-8
+Title: Differential Privacy Based Algorithms for Randomized Control Trials
+Version: 0.0.0.9000
+Authors@R: 
+    person("Kaitlyn", "Webb", , "krd5520@psu.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: This package implements several algorithms to release sanitized treatment effects, sanitized confidence intervals, pvalues, and estimated standard deviation of treatment effects which satisfy (epsilon,delta)-differential privacy (DP). Additionally, it includes functions to create synthetic data using perturbed multivariate histogram methods for the treatments and covariates of confidential data from randomized control trials (RCTs). Using the perturbed histogram method for the covariates and the sanitized treatment effects, a synthetic dataset may be made, which provides some privacy-protections but does not provide approximate DP guarentees.  
+Imports: VGAM, randomizr, mvtnorm, knitr, dplyr, tidyr, kableExtra, parallel
 LazyData: true
+License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
+    license
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+
