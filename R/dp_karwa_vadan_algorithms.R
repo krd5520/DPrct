@@ -185,6 +185,11 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   if(length(epsilon.vec)==1){
     epsilon.vec=rep(epsilon.vec/num.priv.steps,num.priv.steps)
   }
+  if(length(epsilon.vec)<num.priv.steps){
+    expand.last=num.priv.steps-length(epsilon.vec)
+    epsilon.vec=c(epsilon.vec[-1],
+                  rep(epsilon.vec[length(epsilon.vec)]/expand.last,expand.last))
+  }
   if(length(delta.vec)==1){
     delta.vec=rep(delta.vec/(num.priv.steps-1),max(num.priv.steps-1,1))
   }
@@ -216,8 +221,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
     x[x<san.range[1]]=san.range[1]
     x[x>san.range[2]]=san.range[2]
 
-    scale.param=(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
-    print(scale.param)
+    scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
     san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
   }else{
     if(is.null(attr(san.point,"priv.cost"))==TRUE){
