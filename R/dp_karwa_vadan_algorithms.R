@@ -223,7 +223,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
 
     scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
     if(scale.param<=0){
-      stop(paste("The scale param is not positive,",scale.param," Using the range values:",san.range[2], " and ", san.range[1]," with epsilon[3]/n ",epsilon.vec[3]/n)
+      stop(paste("The scale param is not positive,",scale.param," Using the range values:",san.range[2], " and ", san.range[1]," with epsilon[3]/n ",epsilon.vec[3]/n))
     }
     san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
   }else{
