@@ -142,9 +142,6 @@ dp_estimate_sd<-function(x,epsilon,delta=0,bounds.sd){
 #'      In this case, \code{bounds.sd} must be a tuple of the bounds on the
 #'      standard deviation. (See details for specifications of \code{epsilon.vec}
 #'      and \code{delta.vec} when \code{x.sd=NA})
-#' @param san.point (optional) the sanitized point estimate of the coefficient.
-#'      If \code{san.point=NA} (default), then \code{\link{dp_range}} will be used
-#'      with the \code{\link{laplace_mechanism}} to get a sanitized point estimate.
 #' @returns a vector of the lower and upper bounds of the
 #'      \code{sum(alphas)}-level confidence interval that satisfies
 #'      (\code{sum(epsilon.vec)}, \code{sum(delta.vec)})-DP, or a list of the
@@ -173,7 +170,7 @@ dp_estimate_sd<-function(x,epsilon,delta=0,bounds.sd){
 #' Karwa, V. and Vadhan, S. (2017). Finite sample differentially private confidence intervals.
 #'
 #'
-dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=NA,
+dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,
                                 bounds.sd=c(2^(-15),2^15),x.sd=NA,bound.mean=NA,
                                 return.point.sd=FALSE){
 
@@ -213,28 +210,18 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   }
 
 
-  if(is.na(san.point)==TRUE){
-    san.range=dp_range(x=x,sd=san.sd,epsilon=epsilon.vec[2],delta=delta.vec[2],
-                       bound.mean=bound.mean,range.prob=alphas[3])
+  san.range=dp_range(x=x,sd=san.sd,epsilon=epsilon.vec[2],delta=delta.vec[2],
+                     bound.mean=bound.mean,range.prob=alphas[3])
 
-    #trim values to be within the dp range
-    x[x<san.range[1]]=san.range[1]
-    x[x>san.range[2]]=san.range[2]
+  #trim values to be within the dp range
+  x[x<san.range[1]]=san.range[1]
+  x[x>san.range[2]]=san.range[2]
 
-    scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
-    if(scale.param<=0){
-      stop(paste("The scale param is not positive,",scale.param," Using the range values:",san.range[2], " and ", san.range[1]," with epsilon[3]/n ",epsilon.vec[3]/n))
-    }
-    san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
-  }else{
-    if(is.null(attr(san.point,"priv.cost"))==TRUE){
-      epsilon.vec=c(0,epsilon.vec)
-      delta.vec=c(0,delta.vec)
-    }else{
-      epsilon.vec=c(attr(san.point,"priv.cost")[1],epsilon.vec)
-      delta.vec=c(attr(san.point,"priv.cost")[2],delta.vec)
-    }
+  scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
+  if(scale.param<=0){
+    stop(paste("The scale param is not positive,",scale.param," Using the range values:",san.range[2], " and ", san.range[1]," with epsilon[3]/n ",epsilon.vec[3]/n))
   }
+  san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
 
   #half the width of the confidence interval
   half.width=((san.sd/sqrt(n))*stats::qnorm(1-(alphas[1]/2)))+
