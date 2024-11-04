@@ -100,5 +100,8 @@ laplace_mechanism<-function(x,epsilon,f=NULL,sensitivity=NULL,rseed=NA){
     x=f(x)
   }
   scale.param=sensitivity/epsilon
+  if(scale.param<=0){
+    stop(paste("The scale param is not positive,",scale.param," Using the sensivity:",sensitivity, " and epsilon",epsilon))
+  }
   return(x+VGAM::rlaplace(length(x),0,scale.param))
 }

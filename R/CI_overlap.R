@@ -11,7 +11,6 @@
 #' The length of \code{lw1} or \code{lw2} must be a multiple of the other.
 #'
 #'
-## compare_data: rows of summary of regression models (measure of overlap between the CI's)
 CI_overlap=function(lw1,up1,lw2,up2)
 {
   stopifnot((length(lw1)==length(up1))&(length(lw2)==length(up2)))
