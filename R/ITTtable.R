@@ -226,11 +226,15 @@ ITTtable=function(data,reg.models=NULL,
               "Default will only use reg.models and ignore response.vars"))
     }#end length(reg.models)>1
     }else{ #end uneven length => if length(reg.models)==length(response.vars)
+      if(length(reg.models)==1){
+        y.from.reg.models=as.character(stats::as.formula(reg.models))[2]
+      }else{ #end length=1, more than one regression model
       y.from.reg.models=sapply(reg.models,function(x)as.character(stats::as.formula(x))[2])
       if(base::setequal(y.from.reg.models,response.vars)==FALSE){
         warning(paste0("Inputted response.vars do not match the responses variable of reg.models.\n",
                        "Default reg.models will be used and response.vars will be ignored."))
       }
+      }#end length>1
     } #end even length
 } #end response.vars!=NULL
     response.vars=sapply(reg.models,function(x)as.character(stats::as.formula(x))[2])
@@ -251,7 +255,11 @@ ITTtable=function(data,reg.models=NULL,
                       paste0(paste0(c(treat.vars),collapse="+"),"+",covariate.vars), #predictors
                       sep="~") #response.vars seperated from predictors with "~"
   }
+  if(length(reg.models)==1){
+    data[,response.vars]=as.numeric(as.character(data[,response.vars]))
+  }else{
   data[,response.vars]=apply(data[,response.vars],2,function(x)(as.numeric(as.character(x))))
+  }
   ####
 
   ### deal with families input ###
@@ -314,6 +322,20 @@ ITTtable=function(data,reg.models=NULL,
     stopifnot(length(model.names)==length(reg.models))
   }
 
+  if(length(reg.models)==1){
+    table.out=ITTtable_oneresponse(data=data,
+                                reg.model=reg.models,
+                                family=families,
+                                treat.vars=treat.vars,
+                                bonferroni.npvals =bonferroni.npvals,
+                                control.var=control.var,
+                                add.pval.stars=add.pval.stars,
+                                stderr.func=stderr.func,...)
+
+    if(is.null(model.names)==FALSE){
+      table.out$ModelName=model.names
+      }
+  }else{
   ### internal function which calls ITTtable_oneresponse, and adds model.names if
   ### model.names!=NULL. Inputs to ITTtable_oneresponse are determined by and index value.
   one_response_func=function(idx,
@@ -350,6 +372,7 @@ ITTtable=function(data,reg.models=NULL,
   table.out=dplyr::bind_rows(lapply(seq(1,length(reg.models)),
                                     function(idx)
                                       one_response_func(idx,...)))
+  }
   cnames=colnames(table.out)
   cnames[grepl("Pvalue",cnames,ignore.case = FALSE)]=pvalname
   colnames(table.out)=cnames
