@@ -258,6 +258,7 @@ ITTtable=function(data,reg.models=NULL,
   if(length(response.vars)==1){
     data[,response.vars]=as.numeric(as.character(data[,response.vars]))
   }else{
+    print("length>1")
   data[,response.vars]=apply(data[,response.vars],2,function(x)(as.numeric(as.character(x))))
   }
   ####
