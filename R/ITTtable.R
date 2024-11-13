@@ -60,7 +60,7 @@ ITTtable_oneresponse=function(data,reg.model,family="gaussian",
     get.coefs=c(get.coefs,treat.vars.levels[treat.vars.levels%in%mod.coefs])
   }
 
-  sub.summary=mod.summary[mod.coefs%in%c(get.coefs),] #regression summary info for treat.vars
+  sub.summary=mod.summary[mod.coefs%in%c(get.coefs),,drop=F] #regression summary info for treat.vars
   #if no bonferroni.npvals supplied, use number of coefficients for treat.vars
   if(is.null(bonferroni.npvals)==TRUE){
     bonferroni.npvals=nrow(sub.summary)
