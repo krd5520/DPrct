@@ -255,7 +255,7 @@ ITTtable=function(data,reg.models=NULL,
                       paste0(paste0(c(treat.vars),collapse="+"),"+",covariate.vars), #predictors
                       sep="~") #response.vars seperated from predictors with "~"
   }
-  if(length(reg.models)==1){
+  if(length(response.vars)==1){
     data[,response.vars]=as.numeric(as.character(data[,response.vars]))
   }else{
   data[,response.vars]=apply(data[,response.vars],2,function(x)(as.numeric(as.character(x))))
