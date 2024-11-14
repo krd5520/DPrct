@@ -56,7 +56,7 @@ treatment_assign<-function(synth.data,
   if(base::is.data.frame(synth.data)==TRUE){
     #if blocks used in treatment assignment, must have block input
     if(base::grepl("block",assign.type)==T){
-      stopifnot(!base::is.na(blocks))
+      stopifnot(!base::is.null(blocks))
       if(base::is.logical(blocks)&&base::sum(blocks)==0){
         stop("No blocking variables provided.")
       }
