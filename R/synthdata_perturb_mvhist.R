@@ -195,6 +195,7 @@ synthdata_perturb_mvhist<-function(data,
     synth.data<-treatment_assign(synth.data=synth.data,
                                  assign.type=assign.type,
                                  treatment.colname=treatment.colname,
+                                 blocks=blocks,clusters=clusters,
                                  ...)
     #### NOTE: double check this handles multiple treatment variables as well?
   }
