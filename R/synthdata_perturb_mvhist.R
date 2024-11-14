@@ -68,6 +68,7 @@ synthdata_perturb_mvhist<-function(data,
                                    rseed=NA,
                                    within.blocks=TRUE,
                                    blocks=NULL,
+                                   clusters=NULL,
                                    block.sizes=NULL,
                                    ...){
 
