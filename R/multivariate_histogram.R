@@ -35,7 +35,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     #mx.n.combos=prod(sapply(colnames(data),function(x)length(table(data[,x],useNA = "ifany"))))
     #return(base::data.frame(base::table(data)))
   }else{ #if continuous.vars is supplied
-    cont.data=data.frame(data[,continuous.vars]) #subset data to be continuous variables
+    cont.data=data.frame(data[,continuous.vars,drop=F]) #subset data to be continuous variables
     if(base::ncol(cont.data)==0){
       warning("No continuous variables detected.")
     }
