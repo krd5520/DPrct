@@ -170,7 +170,7 @@ dp_estimate_sd<-function(x,epsilon,delta=0,bounds.sd){
 #' Karwa, V. and Vadhan, S. (2017). Finite sample differentially private confidence intervals.
 #'
 #'
-dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,
+dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=NA,
                                 bounds.sd=c(2^(-15),2^15),x.sd=NA,bound.mean=NA,
                                 return.point.sd=FALSE){
 
