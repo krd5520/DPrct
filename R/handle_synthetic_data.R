@@ -118,8 +118,9 @@ handle_synthetic_data<-function(confidential.data,
                 "Synthetic data variables include:",
                 paste(colnames(synth.data),collapse=", ")))
   }
+  if(sum(!(colnames(synth.data)%in%continuous.vars))>0){
   synth.data[,!(colnames(synth.data)%in%continuous.vars)]=apply(synth.data[,!(colnames(synth.data)%in%continuous.vars)],2,as.factor)
-
+  }
   if(return.time==TRUE){
     synthstop=proc.time()
     time.values=c(time.values,c("make.or.check.synthdata.time"=(synthstop-start.time)[[3]]))
