@@ -56,7 +56,7 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
   }
 
   #generate random coefficients
-  coef.rv=mvtnorm::rmvnorm(nsim, mod.coefs[names(mod.coefs)%in% has.coef.name], cov.mat*(nrow(modMat)-ncol(modMat)))
+  coef.rv=mvtnorm::rmvnorm(nsim, mod.coefs[names(mod.coefs)%in% has.coef.name], cov.mat)
 
 
 
