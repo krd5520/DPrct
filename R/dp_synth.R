@@ -288,7 +288,7 @@ dp_synthdata=function(formula,
 
   warning("before sim.response")
   sim.res=mvtnorm::rmvnorm(1, rep(0,nrow(modMat)), (san.mse*diag(nrow=nrow(modMat))))
-  sim.response=as.numeric(c(modMat%*%matrix(mod.coefs,ncol=1)))+sim.res
+  sim.response=as.numeric(c(modMat%*%matrix(mod.coefs,ncol=1)+sim.res))
   warning("after sim.response")
 
   if(return.time==TRUE){
