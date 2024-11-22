@@ -42,10 +42,11 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
   mod.family=mod$family
   if(mod.family$family=="gaussian"){
     if(length(cov.mat)==1){
-      cov.mat=cov.mat*diag(nrow(modMat))
+      cov.mat=cov.mat*diag(nrow=nrow(modMat))
     }
+    warning("in simulate_glm before generate residuals")
     sim.res=mvtnorm::rmvnorm(nsim, rep(0,nrow(modMat)), cov.mat)
-    sim.response=tcrossprod(modMat,mod.coefs)+sim.res
+    sim.response=c(modMat%*%matrix(mod.coefs,ncol=1))+sim.res
   }else{
     not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
     if(length(not.in.modMat)>0){ #if some variables don't appear
