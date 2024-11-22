@@ -41,8 +41,10 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
 
   mod.family=mod$family
   if(mod.family$family=="gaussian"){
-    if(length(cov.mat)==1){
-      cov.mat=cov.mat*diag(nrow=nrow(modMat))
+    if(is.null(cov.mar)==TRUE){
+      cov.mat=stats::var(mod$residuals)*diag(x=1,nrow=nrow(modMat))
+    }else if(length(cov.mat)==1){
+      cov.mat=cov.mat*diag(x=1,nrow=nrow(modMat))
     }
     warning("in simulate_glm before generate residuals")
     sim.res=mvtnorm::rmvnorm(nsim, rep(0,nrow(modMat)), cov.mat)
