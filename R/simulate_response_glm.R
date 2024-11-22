@@ -37,6 +37,7 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
 
   #model predictor matrix
   modMat=stats::model.matrix(predictor.formula, pred.newdata)
+  modMat.cnames=colnames(modMat)
   not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
   if(length(not.in.modMat)>0){ #if some variables don't appear
     zeros.mat=matrix(0,ncol=length(not.in.modMat),nrow=nrow(modMat))
