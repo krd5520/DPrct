@@ -89,7 +89,6 @@ dp_synthdata=function(formula,
                   list("conf.model.fit"=(proc.time()-model.fit.start)[[3]]))
   }
 
-  warning("in dp_synthdata before iter proxies")
   # if synthetic data is supplied, check it is data.frame w/ all the model.vars
   if((is.null(synth.data)==FALSE)&&
      (is.data.frame(synth.data)==TRUE)&&
@@ -163,7 +162,7 @@ dp_synthdata=function(formula,
                             mse.delta=mse.delta,
                             mse.bd.sd=mse.bd.sd),envir=globalenv())
 
-    warning("in dp_synthdata after iter proxies")
+
     coef.names=colnames(cov.mat)
   }else{#don't use residerror
     #print("inside use_san_residerror==FALSE")
@@ -220,7 +219,6 @@ dp_synthdata=function(formula,
   bd.mean.list=check.lists[[5]]
 
   num.coefs=ncol(iter.betas)
-  warning("before dp_coef_stats")
   if(is.null(cov.mat)==TRUE){ #if not using sanitized residuals
   #get estimate and standard error
     san.summary=matrix(nrow=num.coefs,ncol=9)
@@ -268,7 +266,6 @@ dp_synthdata=function(formula,
       san.summary[idx,]=temp.stats
     }
   }
-  warning("after dp_coef_stats")
   rownames(san.summary)=colnames(iter.betas)
   colnames(san.summary)=c("san.coef","san.sd","san.CI.lower","san.CI.upper",
                           "confidence.level","san.z.value","san.pvalue","epsilon","delta")
@@ -286,10 +283,8 @@ dp_synthdata=function(formula,
   #coef.rv=mvtnorm::rmvnorm(1, san.coefs[names(san.coefs)%in%has.coef.name],
   #                         cov.mat[rownames(cov.mat)%in%has.coef.name,colnames(cov.mat)%in%has.coef.name])
 
-  warning("before sim.response")
   sim.res=mvtnorm::rmvnorm(1, rep(0,nrow(modMat)), (san.mse*diag(nrow=nrow(modMat))))
   sim.response=as.numeric(c(modMat%*%matrix(mod.coefs,ncol=1))+c(sim.res))
-  warning("after sim.response")
 
   if(return.time==TRUE){
     san.y.stop=proc.time()
