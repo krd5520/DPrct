@@ -163,6 +163,7 @@ dp_synthdata=function(formula,
                             mse.delta=mse.delta,
                             mse.bd.sd=mse.bd.sd),envir=globalenv())
 
+    warning("in dp_synthdata after iter proxies")
     coef.names=colnames(cov.mat)
   }else{#don't use residerror
     #print("inside use_san_residerror==FALSE")
@@ -219,6 +220,7 @@ dp_synthdata=function(formula,
   bd.mean.list=check.lists[[5]]
 
   num.coefs=ncol(iter.betas)
+  warning("before dp_coef_stats")
   if(is.null(cov.mat)==TRUE){ #if not using sanitized residuals
   #get estimate and standard error
     san.summary=matrix(nrow=num.coefs,ncol=9)
@@ -266,6 +268,7 @@ dp_synthdata=function(formula,
       san.summary[idx,]=temp.stats
     }
   }
+  warning("after dp_coef_stats")
   rownames(san.summary)=colnames(iter.betas)
   colnames(san.summary)=c("san.coef","san.sd","san.CI.lower","san.CI.upper",
                           "confidence.level","san.z.value","san.pvalue","epsilon","delta")
