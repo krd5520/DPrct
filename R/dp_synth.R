@@ -89,6 +89,7 @@ dp_synthdata=function(formula,
                   list("conf.model.fit"=(proc.time()-model.fit.start)[[3]]))
   }
 
+  warning("in dp_synthdata before iter proxies")
   # if synthetic data is supplied, check it is data.frame w/ all the model.vars
   if((is.null(synth.data)==FALSE)&&
      (is.data.frame(synth.data)==TRUE)&&
