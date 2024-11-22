@@ -43,8 +43,8 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
     zeros.mat=matrix(0,ncol=length(not.in.modMat),nrow=nrow(modMat))
     modMat=cbind(modMat,zeros.mat)
     colnames(modMat)=c(modMat.cnames,not.in.modMat)
-    modMat=modMat[,has.coef.name]
   }
+  modMat=modMat[,has.coef.name]
 
   mod.family=mod$family
   if(mod.family$family=="gaussian"){
