@@ -18,6 +18,7 @@
 simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
                                n.sim=1,cov.mat=NULL){
 
+  warning(paste("in simulate_response_glm. n.sim=",n.sim))
   #get predictor formula from mod if no predictor.formula given
   if(is.null(predictor.formula)==TRUE){
     predictor.formula=stats::as.formula(paste0("~",as.character(stats::as.formula(mod$formula))[3]))
@@ -48,7 +49,7 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
     }
 
     sim.res=mvtnorm::rmvnorm(n.sim, rep(0,nrow(modMat)), cov.mat)
-    sim.response=(modMat%*%matrix(mod.coefs,ncol=1))+sim.res
+    sim.response=t(modMat%*%matrix(mod.coefs,ncol=1))+sim.res
 
   }else{
     not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
