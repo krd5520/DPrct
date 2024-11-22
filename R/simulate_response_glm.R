@@ -41,7 +41,7 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
 
   mod.family=mod$family
   if(mod.family$family=="gaussian"){
-    if(is.null(cov.mar)==TRUE){
+    if(is.null(cov.mat)==TRUE){
       cov.mat=stats::var(mod$residuals)*diag(x=1,nrow=nrow(modMat))
     }else if(length(cov.mat)==1){
       cov.mat=cov.mat*diag(x=1,nrow=nrow(modMat))
