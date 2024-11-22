@@ -279,6 +279,21 @@ dp_synthdata=function(formula,
   has.coef.name=names(san.coefs)[!is.na(san.coefs)] #only columns where coefficient!=NA
   san.coef.std.err=san.summary[,2]
 
+  mod.coefs=stats::coefficients(mod)
+  has.coef.name=names(mod.coefs)[!is.na(mod.coefs)] #only columns where coefficient!=NA
+
+
+  #model predictor matrix
+  modMat=stats::model.matrix(predictor.formula, pred.newdata)
+  modMat.cnames=colnames(modMat)
+  not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
+  if(length(not.in.modMat)>0){ #if some variables don't appear
+    zeros.mat=matrix(0,ncol=length(not.in.modMat),nrow=nrow(modMat))
+    modMat=cbind(modMat,zeros.mat)
+    colnames(modMat)=c(modMat.cnames,not.in.modMat)
+  }
+  modMat=modMat[,has.coef.name]
+
   ############################## PROBLEM HERE B/C MISSING A LEVEL OF BLOCK.
   #coef.rv=mvtnorm::rmvnorm(1, san.coefs[names(san.coefs)%in%has.coef.name],
   #                         cov.mat[rownames(cov.mat)%in%has.coef.name,colnames(cov.mat)%in%has.coef.name])
