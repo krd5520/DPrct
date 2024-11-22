@@ -125,9 +125,9 @@ hybrid_synth<-function(formula,
   #simulate response from synthetic data and confidential model
   synth.model.data=synth.data[,colnames(synth.data)%in%model.vars]
   sim.response=simulate_response_glm(conf.model,newdata=synth.model.data)
-  warning(paste("right after simulate_response_glm: dim of response:",dim(sim.response),
+  warning(paste("right after simulate_response_glm: dim of response:",paste0(dim(sim.response),collapse=","),
                 "dim of synth data:",paste0(dim(synth.data),collapse=",")))
-  synth.data$response=unlist(sim.response)
+  synth.data$response=unlist(c(sim.response))
 
   #if response variable is factor, replace values with level names
   if(is.factor(confidential.data[,response.var])==TRUE){
