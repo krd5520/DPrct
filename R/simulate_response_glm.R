@@ -4,10 +4,10 @@
 #' @param newdata a data.frame of the new data of predictors to generate responses from
 #' @param predictor.formula a formula object that is the formula used in the \code{mod} object.
 #'    If \code{NULL}, the formula is extracted from \code{mod}.
-#' @param nsim a integer for the number of responses to simulate from the \code{newdata}
+#' @param n.sim a integer for the number of responses to simulate from the \code{newdata}
 #' @param cov.mat the covariance matrix for the estimated model coefficients. If NULL
 #'    (default), then \code{stats::vcov(mod)} is used.
-#' @returns a vector (or matrix) with \code{nsim} columns and \code{nrows(newdata)} rows
+#' @returns a vector (or matrix) with \code{n.sim} columns and \code{nrows(newdata)} rows
 #'    of response randomly generated from the \code{mod} using \code{newdata} as the
 #'    predictors. Each column is a new simulation.
 #' @importFrom stats as.formula coefficients vcov model.matrix
@@ -16,7 +16,7 @@
 #' @export
 #'
 simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
-                               nsim=1,cov.mat=NULL){
+                               n.sim=1,cov.mat=NULL){
 
   #get predictor formula from mod if no predictor.formula given
   if(is.null(predictor.formula)==TRUE){
@@ -47,8 +47,8 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
       cov.mat=cov.mat*diag(x=1,nrow=nrow(modMat))
     }
 
-    sim.res=mvtnorm::rmvnorm(nsim, rep(0,nrow(modMat)), cov.mat)
-    sim.response=as.numeric(c(modMat%*%matrix(mod.coefs,ncol=1)))+sim.res
+    sim.res=mvtnorm::rmvnorm(n.sim, rep(0,nrow(modMat)), cov.mat)
+    sim.response=(modMat%*%matrix(mod.coefs,ncol=1))+sim.res
 
   }else{
     not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
@@ -67,7 +67,7 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
     }
 
     #generate random coefficients
-    coef.rv=mvtnorm::rmvnorm(nsim, mod.coefs[names(mod.coefs)%in% has.coef.name], cov.mat)
+    coef.rv=mvtnorm::rmvnorm(n.sim, mod.coefs[names(mod.coefs)%in% has.coef.name], cov.mat)
 
     #get model value before inverse link function (still need to get response)
     sim.model=tcrossprod(modMat,coef.rv)
@@ -76,9 +76,10 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
 
 
   #if there is more than 1 simulation label the simulations
-  if(nsim>1){colnames(sim.response)=paste("sim",seq(1,nsim),sep="_")
+  if(n.sim>1){
+    colnames(sim.response)=paste("sim",seq(1,n.sim),sep="_")
   }else{
-    as.numeric(sim.response)
+    as.numeric(c(sim.response))
   }
 
 
