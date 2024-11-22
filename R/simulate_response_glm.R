@@ -76,6 +76,8 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
 
   #if there is more than 1 simulation label the simulations
   if(nsim>1){
+    warning(paste("dim of sim.response:",paste0(dim(sim.response),collapse=", "),
+                  "nsim=",nsim))
     colnames(sim.response)=paste("sim",seq(1,nsim),sep="_")
   }else{
     as.numeric(c(sim.response))
