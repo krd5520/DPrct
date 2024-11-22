@@ -412,5 +412,5 @@ colnames(cov.mat)=colnames(modMat)
 rownames(cov.mat)=colnames(modMat)
 
 
-return(list("iter.betas"=betas[,colnames(betas)%in%has.coef.name],"cov.mat"=cov.mat))
+return(list("iter.betas"=betas[,colnames(betas)%in%has.coef.name],"cov.mat"=cov.mat,"san.mse"=san.mse))
 }

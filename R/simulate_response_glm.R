@@ -38,32 +38,38 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
 
   #model predictor matrix
   modMat=stats::model.matrix(predictor.formula, pred.newdata)
-  modMat=modMat[,colnames(modMat)%in%has.coef.name] #remove columns with no coefficient
-  modMat.cnames=colnames(modMat)
-  not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
-  if(length(not.in.modMat)>0){ #if some variables don't appear
-    zeros.mat=matrix(0,ncol=length(not.in.modMat),nrow=nrow(modMat))
-    modMat=cbind(modMat,zeros.mat)
-    colnames(modMat)=c(modMat.cnames,not.in.modMat)
-    modMat=modMat[,has.coef.name]
-  }
-  #if no cov.mat provided use the one from mod
-  if(is.null(cov.mat)==TRUE){
-    cov.mat=stats::vcov(mod)
-    cov.mat=cov.mat[rownames(cov.mat)%in%has.coef.name,colnames(cov.mat)%in%has.coef.name] #remove columns and rows for NA coefs
-    #NOTE: if models are generated from san.X
-    # cov.mat=(mean(resid^2)/(n-num.predictors-1))solve(t(san.X)%*%san.X/n)
-  }
 
-  #generate random coefficients
-  coef.rv=mvtnorm::rmvnorm(nsim, mod.coefs[names(mod.coefs)%in% has.coef.name], cov.mat)
-
-
-
-  #get model value before inverse link function (still need to get response)
-  sim.model=tcrossprod(modMat,coef.rv)
   mod.family=mod$family
-  sim.response=mod.family$linkinv(sim.model) #get response
+  if(mod.family=="gaussian"){
+    if(length(cov.mat)==1){
+      cov.mat=cov.mat*diag(nrow(modMat))
+    }
+    sim.res=mvtnorm::rmvnorm(nsim, rep(0,nrow(modMat)), cov.mat)
+    sim.response=tcrossprod(modMat,mod.coefs)+sim.res
+  }else{
+    not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
+    if(length(not.in.modMat)>0){ #if some variables don't appear
+      zeros.mat=matrix(0,ncol=length(not.in.modMat),nrow=nrow(modMat))
+      modMat=cbind(modMat,zeros.mat)
+      colnames(modMat)=c(modMat.cnames,not.in.modMat)
+      modMat=modMat[,has.coef.name]
+    }
+    #if no cov.mat provided use the one from mod
+    if(is.null(cov.mat)==TRUE){
+      cov.mat=stats::vcov(mod)
+      cov.mat=cov.mat[rownames(cov.mat)%in%has.coef.name,colnames(cov.mat)%in%has.coef.name] #remove columns and rows for NA coefs
+      #NOTE: if models are generated from san.X
+      # cov.mat=(mean(resid^2)/(n-num.predictors-1))solve(t(san.X)%*%san.X/n)
+    }
+
+    #generate random coefficients
+    coef.rv=mvtnorm::rmvnorm(nsim, mod.coefs[names(mod.coefs)%in% has.coef.name], cov.mat)
+
+    #get model value before inverse link function (still need to get response)
+    sim.model=tcrossprod(modMat,coef.rv)
+    sim.response=mod.family$linkinv(sim.model) #get response
+  }
+
 
   #if there is more than 1 simulation label the simulations
   if(nsim>1){colnames(sim.response)=paste("sim",seq(1,nsim),sep="_")
