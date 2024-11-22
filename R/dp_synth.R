@@ -282,7 +282,9 @@ dp_synthdata=function(formula,
   #coef.rv=mvtnorm::rmvnorm(1, san.coefs[names(san.coefs)%in%has.coef.name],
   #                         cov.mat[rownames(cov.mat)%in%has.coef.name,colnames(cov.mat)%in%has.coef.name])
 
-  sim.response=tcrossprod(modMat[,colnames(modMat)%in%has.coef.name],coef.rv)+mtvnorm::rmvnorm(1,rep(0,nrows(modMat)),(san.mse*diag(nrow=nrow(modMat)))
+  sim.response=tcrossprod(modMat[,colnames(modMat)%in%has.coef.name],coef.rv)+
+    mtvnorm::rmvnorm(1,rep(0,nrows(modMat)),(san.mse*diag(nrow=nrow(modMat))))
+
   if(return.time==TRUE){
     san.y.stop=proc.time()
     time.values=c(time.values,
