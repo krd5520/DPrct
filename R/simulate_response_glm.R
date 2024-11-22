@@ -47,6 +47,7 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
     warning("in simulate_glm before generate residuals")
     sim.res=mvtnorm::rmvnorm(nsim, rep(0,nrow(modMat)), cov.mat)
     sim.response=c(modMat%*%matrix(mod.coefs,ncol=1))+sim.res
+    warning("in simulate_glm after generate residuals")
   }else{
     not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
     if(length(not.in.modMat)>0){ #if some variables don't appear
