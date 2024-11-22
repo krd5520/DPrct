@@ -287,7 +287,7 @@ dp_synthdata=function(formula,
   #                         cov.mat[rownames(cov.mat)%in%has.coef.name,colnames(cov.mat)%in%has.coef.name])
 
   warning("before sim.response")
-  sim.res=mvtnorm::rmvnorm(nsim, rep(0,nrow(modMat)), (san.mse*diag(nrow=nrow(modMat))))
+  sim.res=mvtnorm::rmvnorm(1, rep(0,nrow(modMat)), (san.mse*diag(nrow=nrow(modMat))))
   sim.response=as.numeric(c(modMat%*%matrix(mod.coefs,ncol=1)))+sim.res
   warning("after sim.response")
 
