@@ -279,9 +279,6 @@ dp_synthdata=function(formula,
   has.coef.name=names(san.coefs)[!is.na(san.coefs)] #only columns where coefficient!=NA
   san.coef.std.err=san.summary[,2]
 
-  mod.coefs=stats::coefficients(mod)
-  has.coef.name=names(mod.coefs)[!is.na(mod.coefs)] #only columns where coefficient!=NA
-
 
   #model predictor matrix
   modMat=stats::model.matrix(predictor.formula, pred.newdata)
@@ -299,7 +296,7 @@ dp_synthdata=function(formula,
   #                         cov.mat[rownames(cov.mat)%in%has.coef.name,colnames(cov.mat)%in%has.coef.name])
 
   sim.res=mvtnorm::rmvnorm(1, rep(0,nrow(modMat)), (san.mse*diag(nrow=nrow(modMat))))
-  sim.response=as.numeric(c(modMat%*%matrix(mod.coefs[names(mod.coefs)%in% has.coef.name],ncol=1))+c(sim.res))
+  sim.response=as.numeric(c(modMat%*%matrix(san.coefs[names(san.coefs)%in% has.coef.name],ncol=1))+c(sim.res))
 
   if(return.time==TRUE){
     san.y.stop=proc.time()
