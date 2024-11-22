@@ -37,6 +37,13 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
 
   #model predictor matrix
   modMat=stats::model.matrix(predictor.formula, pred.newdata)
+  not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
+  if(length(not.in.modMat)>0){ #if some variables don't appear
+    zeros.mat=matrix(0,ncol=length(not.in.modMat),nrow=nrow(modMat))
+    modMat=cbind(modMat,zeros.mat)
+    colnames(modMat)=c(modMat.cnames,not.in.modMat)
+    modMat=modMat[,has.coef.name]
+  }
 
   mod.family=mod$family
   if(mod.family$family=="gaussian"){
@@ -46,15 +53,10 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
       cov.mat=cov.mat*diag(x=1,nrow=nrow(modMat))
     }
 
-    sim.response=t(mvtnorm::rmvnorm(nsim, modMat%*%matrix(mod.coefs,ncol=1), cov.mat))
+    sim.response=t(mvtnorm::rmvnorm(nsim,
+                                    modMat%*%matrix(mod.coefs[names(mod.coefs)%in% has.coef.name],
+                                                    ncol=1), cov.mat))
   }else{
-    not.in.modMat=has.coef.name[!(has.coef.name %in% modMat.cnames)]
-    if(length(not.in.modMat)>0){ #if some variables don't appear
-      zeros.mat=matrix(0,ncol=length(not.in.modMat),nrow=nrow(modMat))
-      modMat=cbind(modMat,zeros.mat)
-      colnames(modMat)=c(modMat.cnames,not.in.modMat)
-      modMat=modMat[,has.coef.name]
-    }
     #if no cov.mat provided use the one from mod
     if(is.null(cov.mat)==TRUE){
       cov.mat=stats::vcov(mod)
