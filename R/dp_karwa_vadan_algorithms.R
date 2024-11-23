@@ -53,7 +53,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
     continuous_bins(x,bin.breaks=breaks.vec,bin.lab=bin.labs)))
   hist.df=dp_perturbed_hist(hist.df=hist.df,epsilon=epsilon,delta=delta)
   #l-hat in paper. This is the bin that has the highest sanitized proportion
-  warning(paste0("Hist Dim",paste(dim(hist.df,collapse=", "))," with colnames",paste0(colnames(hist.df),collapse=", ")))
+  warning(paste0("Hist Dim",paste(dim(hist.df),collapse=", ")," with colnames",paste0(colnames(hist.df),collapse=", ")))
   biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
 
   #get sanitized min and max
