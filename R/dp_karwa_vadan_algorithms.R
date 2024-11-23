@@ -58,6 +58,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   #get sanitized min and max
   half.range=4*sd*base::sqrt(base::log(n/range.prob))
   san.range.center=sd*biggest.san.bin
+  warning(paste("range center is:",san.range.center," half.range is ",half.range))
   san.range=c("san.min"=san.range.center-half.range,
                 "san.max"=san.range.center+half.range)
   attr(san.range,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)
@@ -193,6 +194,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   if(length(alphas)==1){
     alphas=rep(alphas/3,3)
   }
+  warning(paste0("epsilons are",paste0(epsilon.vec,collapse = ", ")))
   stopifnot(sum(alphas)>0&sum(alphas)<1) #significance level must be in (0,1)
 
   n=length(x)
@@ -208,6 +210,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
       delta.vec=c(attr(san.sd,"priv.cost")[2],delta.vec)
     }
   }
+
 
   if(is.na(bound.mean)==TRUE){
     message("No bound mean parameter supplied. Default to 1000")
