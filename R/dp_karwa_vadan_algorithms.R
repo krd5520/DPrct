@@ -49,8 +49,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
                           iter.bound.breaks[length(iter.bound.breaks)]+1))
 
   #break the data into bins and get frequencies
-  hist.df=data.frame(table(
-    continuous_bins(x,bin.breaks=breaks.vec,bin.lab=bin.labs)))
+  hist.df=data.frame(dplyr::count(data,data[seq(1,nrow(data)),],name="Freq"))
   hist.df=dp_perturbed_hist(hist.df=hist.df,epsilon=epsilon,delta=delta)
   #l-hat in paper. This is the bin that has the highest sanitized proportion
   warning(paste0("Hist Dim",paste(dim(hist.df),collapse=", ")," with colnames",paste0(colnames(hist.df),collapse=", ")))
