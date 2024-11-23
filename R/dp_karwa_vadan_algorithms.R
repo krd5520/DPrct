@@ -209,6 +209,11 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
     }
   }
 
+  if(is.na(bound.mean)==TRUE){
+    message("No bound mean parameter supplied. Default to 1000")
+    bound.mean=1000
+  }
+
 
   san.range=dp_range(x=x,sd=san.sd,epsilon=epsilon.vec[2],delta=delta.vec[2],
                      bound.mean=bound.mean,range.prob=alphas[3])
