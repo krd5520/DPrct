@@ -138,6 +138,7 @@ dp_synthdata=function(formula,
       list(mse.param,param.list)
     }
 
+
     #get epsilon, delta, and bounds.sd parameters for sanitizing mse
     tempout=get_sanmse_params(epsilon.list)
     mse.epsilon=tempout[[1]]
@@ -152,6 +153,7 @@ dp_synthdata=function(formula,
     mse.bd.sd=tempout[[1]]
     bd.sd.list=tempout[[2]]
 
+    warning("before dp_iter_hybrid")
     list2env(dp_iter_hybrid(conf.model=conf.model,
                             confidential.data=confidential.data,
                             synth.data=synth.data,
@@ -222,6 +224,7 @@ dp_synthdata=function(formula,
   if(is.null(cov.mat)==TRUE){ #if not using sanitized residuals
   #get estimate and standard error
     san.summary=matrix(nrow=num.coefs,ncol=9)
+    warning("before dp_coef_stats")
     for(idx in seq(1,length(coef.names))){
       temp.stats=dp_coef_stats(iter.betas[,idx],
                                bounds.sd=bd.sd.list[[idx]],
@@ -279,6 +282,7 @@ dp_synthdata=function(formula,
   has.coef.name=names(san.coefs)[!is.na(san.coefs)] #only columns where coefficient!=NA
   san.coef.std.err=san.summary[,2]
 
+  warning("before model.matrix")
 
   #model predictor matrix
   modMat=stats::model.matrix(predictor.formula, pred.newdata)
