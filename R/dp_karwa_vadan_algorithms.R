@@ -49,15 +49,15 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
                           iter.bound.breaks[length(iter.bound.breaks)]+1))
 
   discretized.x=continuous_bins(x,num.bins=NA,bin.breaks=breaks.vec,bin.lab=bin.labs)
-  warning(paste0("discetrized x:",paste0(head(discretized.x),collapse=", ")))
+  #warning(paste0("discetrized x:",paste0(head(discretized.x),collapse=", ")))
   #break the data into bins and get frequencies
   hist.df=data.frame(table(discretized.x))
-  warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df))," pos values ",sum(hist.df[!is.na(hist.df)]>0)))
+  #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df))," pos values ",sum(hist.df[!is.na(hist.df)]>0)))
   hist.df=dp_perturbed_hist(hist.df=hist.df,epsilon=epsilon,delta=delta)
   #l-hat in paper. This is the bin that has the highest sanitized proportion
   #warning(paste0("Hist Dim",paste(dim(hist.df),collapse=", ")," with colnames",paste0(colnames(hist.df),collapse=", ")))
-  warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df$san.prop[!is.na(hist.df$san.prop)]>0)))
-  warning(paste0("san.prop pos is",paste0(head(hist.df$san.prop[hist.df$san.prop>0]),collapse=", ")))
+  #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df$san.prop[!is.na(hist.df$san.prop)]>0)))
+  #warning(paste0("san.prop pos is",paste0(head(hist.df$san.prop[hist.df$san.prop>0]),collapse=", ")))
   biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
 
   #get sanitized min and max
@@ -223,7 +223,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   }
 
 
-  warning(paste0("Length of vector is",length(x)," bound mean parameter is",bound.mean))
+  #warning(paste0("Length of vector is",length(x)," bound mean parameter is",bound.mean))
   san.range=dp_range(x=x,sd=san.sd,epsilon=epsilon.vec[2],delta=delta.vec[2],
                      bound.mean=bound.mean,range.prob=alphas[3])
 
@@ -232,8 +232,10 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   x[x>san.range[2]]=san.range[2]
 
   scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
-  warning(paste("scale parameter is",scale.param," range params are ",paste0(san.range,collapse=", "),"epsilon is ",epsilon.vec[3]))
-  san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
+  if(is.na(range.params[1])==TRUE|is.na(range.params[2])==TRUE|is.na(scale.param)==TRUE)|scale.param<0){
+    warning(paste("scale parameter is",scale.param," range params are ",paste0(san.range,collapse=", "),"epsilon is ",epsilon.vec[3]))
+  }
+   san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
 
   #half the width of the confidence interval
   half.width=((san.sd/sqrt(n))*stats::qnorm(1-(alphas[1]/2)))+
