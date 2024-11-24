@@ -55,8 +55,8 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df))," pos values ",sum(hist.df[!is.na(hist.df)]>0)))
   hist.df=dp_perturbed_hist(hist.df=hist.df,epsilon=epsilon,delta=delta)
   #l-hat in paper. This is the bin that has the highest sanitized proportion
-  warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df[!is.na(hist.df$san.prop)]>0)))
-  warning(paste0("Hist Dim",paste(dim(hist.df),collapse=", ")," with colnames",paste0(colnames(hist.df),collapse=", ")))
+  #warning(paste0("Hist Dim",paste(dim(hist.df),collapse=", ")," with colnames",paste0(colnames(hist.df),collapse=", ")))
+  warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df$san.prop[!is.na(hist.df$san.prop)]>0)))
   warning(paste0("san.prop pos is",paste0(head(hist.df$san.prop[hist.df$san.prop>0]),collapse=", ")))
   biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
 
@@ -199,7 +199,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   if(length(alphas)==1){
     alphas=rep(alphas/3,3)
   }
-  warning(paste0("epsilons are",paste0(epsilon.vec,collapse = ", ")))
+  #warning(paste0("epsilons are",paste0(epsilon.vec,collapse = ", ")))
   stopifnot(sum(alphas)>0&sum(alphas)<1) #significance level must be in (0,1)
 
   n=length(x)
@@ -223,7 +223,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   }
 
 
-  warning(paste0("Length of vector is",length(x)," bound mean parameter is",bound.mean))
+  #warning(paste0("Length of vector is",length(x)," bound mean parameter is",bound.mean))
   san.range=dp_range(x=x,sd=san.sd,epsilon=epsilon.vec[2],delta=delta.vec[2],
                      bound.mean=bound.mean,range.prob=alphas[3])
 
