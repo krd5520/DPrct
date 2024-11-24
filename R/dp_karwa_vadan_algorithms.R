@@ -223,7 +223,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   }
 
 
-  #warning(paste0("Length of vector is",length(x)," bound mean parameter is",bound.mean))
+  warning(paste0("Length of vector is",length(x)," bound mean parameter is",bound.mean))
   san.range=dp_range(x=x,sd=san.sd,epsilon=epsilon.vec[2],delta=delta.vec[2],
                      bound.mean=bound.mean,range.prob=alphas[3])
 
