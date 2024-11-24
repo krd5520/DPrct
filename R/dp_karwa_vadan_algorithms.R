@@ -232,8 +232,9 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   x[x>san.range[2]]=san.range[2]
 
   scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
-  if(is.na(range.params[1])==TRUE|is.na(range.params[2])==TRUE|is.na(scale.param)==TRUE|scale.param<0){
+  if(is.na(san.range[1])==TRUE|is.na(san.range[2])==TRUE|is.na(scale.param)==TRUE|scale.param<0){
     warning(paste("scale parameter is",scale.param," range params are ",paste0(san.range,collapse=", "),"epsilon is ",epsilon.vec[3]))
+    stop("Error with the scale parameter to add privacy noise. This may be a result of not enough observations or incorrect bound parameters.")
   }
    san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
 
