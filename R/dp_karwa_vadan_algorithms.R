@@ -59,11 +59,11 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df$san.prop[!is.na(hist.df$san.prop)]>0)))
   #warning(paste0("san.prop pos is",paste0(head(hist.df$san.prop[hist.df$san.prop>0]),collapse=", ")))
   biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
-
+  warning(paste0("biggest.san.bin is",biggest.san.bin))
   #get sanitized min and max
   half.range=4*sd*base::sqrt(base::log(n/range.prob))
   san.range.center=sd*biggest.san.bin
-  warning(paste("range center is:",san.range.center," half.range is ",half.range))
+  #warning(paste("range center is:",san.range.center," half.range is ",half.range))
   san.range=c("san.min"=san.range.center-half.range,
                 "san.max"=san.range.center+half.range)
   attr(san.range,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)
