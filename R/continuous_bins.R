@@ -19,7 +19,7 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL){
   }
 
   na.idx=is.na(cont.col)
-  if(base::is.na(num.bins)==TRUE){ #if num.bins not provided, use bin.breaks
+  if(base::is.na(bin.breaks)==FALSE){ #if num.bins not provided, use bin.breaks
     if(base::is.null(bin.lab)==TRUE){ #but no bin.labels supplied. Then midpoints are labels
       bin.lab=base::as.character(0.5*(bin.breaks[base::seq(2,base::length(bin.breaks))]-
                                         bin.breaks[base::seq(1,base::length(bin.breaks)-1)]))
