@@ -44,7 +44,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   bound=ceiling(abs(bound.mean)/sd) #r in paper
   iter.bound.breaks=seq(-bound,bound) #j=-r,-r+1,...,r
   #breaks for 2r+1 bins in [-R-sd/2,R+sd/2] where R is the bound.mean
-  breaks.vec=c(-Inf,sd*(iter.bound.breaks-0.5),Inf)
+  breaks.vec=c(-1e20,sd*(iter.bound.breaks-0.5),1e20)
   bin.labs=as.character(c(iter.bound.breaks,
                           iter.bound.breaks[length(iter.bound.breaks)]+1))
 
