@@ -53,6 +53,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   #break the data into bins and get frequencies
   if(length(unique(discretized.x))==1){
     biggest.san.bin=as.numeric(as.character(names(discretized.x)[1]))
+    warning(paste0("biggest.san.bin is ",biggest.san.bin))
   }else{
     hist.df.orig=as.data.frame(table(discretized.x,useNA = "ifany"))
     #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df))," pos values ",sum(hist.df[!is.na(hist.df)]>0)))
