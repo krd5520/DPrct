@@ -101,6 +101,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
         " biggest.san.bin is",biggest.san.bin,
         " because the bounds is ",bound,
         "sd is",sd," max and min is ",max(x),", ",min(x)))
+    }
   }
    #get sanitized min and max
   half.range=4*sd*base::sqrt(base::log(n/range.prob))
