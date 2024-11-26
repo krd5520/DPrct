@@ -59,10 +59,16 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df$san.prop[!is.na(hist.df$san.prop)]>0)))
   #warning(paste0("max hist df is ",paste(hist.df[hist.df$san.prop=max(hist.df$san.prop),],collapse=", ")))
   biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
-  warning(paste0(paste0("max hist df is ",paste(hist.df[hist.df$san.prop==max(hist.df$san.prop),],collapse=", ")),
-                 "biggest.san.bin is",biggest.san.bin,
-                 "because the bounds is ",bound, "max and min is ",max(x),", ",min(x)))
-  #get sanitized min and max
+  if(is.na(hist.df[which.max(hist.df$san.prop),1])){
+    new.sd=dp_estimate_sd(x,epsilon/2,delta/2,c(2^(-15),2^(15)))
+    warning(paste0(paste0(" max san prop is ", max(histdf$san.prop),
+                          " max hist df is ",paste(hist.df[hist.df$san.prop==max(hist.df$san.prop),],collapse=", ")),
+                   " biggest.san.bin is",biggest.san.bin,
+                   " because the bounds is ",bound, " max and min is ",max(x),", ",min(x),
+                   " new.sd is ",new.sd))
+
+  }
+   #get sanitized min and max
   half.range=4*sd*base::sqrt(base::log(n/range.prob))
   san.range.center=sd*biggest.san.bin
   #warning(paste("range center is:",san.range.center," half.range is ",half.range))
