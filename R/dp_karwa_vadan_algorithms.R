@@ -51,7 +51,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   discretized.x=continuous_bins(x,num.bins=NA,bin.breaks=breaks.vec,bin.lab=bin.labs)
   #warning(paste0("discetrized x:",paste0(head(discretized.x),collapse=", ")))
   #break the data into bins and get frequencies
-  hist.df.orig=data.frame(table(discretized.x))
+  hist.df.orig=as.data.frame(table(discretized.x))
   #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df))," pos values ",sum(hist.df[!is.na(hist.df)]>0)))
   hist.df=dp_perturbed_hist(hist.df=hist.df.orig,epsilon=epsilon,delta=delta)
   #l-hat in paper. This is the bin that has the highest sanitized proportion
