@@ -51,9 +51,9 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   discretized.x=continuous_bins(x,num.bins=NA,bin.breaks=breaks.vec,bin.lab=bin.labs)
   #warning(paste0("discetrized x:",paste0(head(discretized.x),collapse=", ")))
   #break the data into bins and get frequencies
-  hist.df=data.frame(table(discretized.x))
+  hist.df.orig=data.frame(table(discretized.x))
   #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df))," pos values ",sum(hist.df[!is.na(hist.df)]>0)))
-  hist.df=dp_perturbed_hist(hist.df=hist.df,epsilon=epsilon,delta=delta)
+  hist.df=dp_perturbed_hist(hist.df=hist.df.orig,epsilon=epsilon,delta=delta)
   #l-hat in paper. This is the bin that has the highest sanitized proportion
   #warning(paste0("Hist Dim",paste(dim(hist.df),collapse=", ")," with colnames",paste0(colnames(hist.df),collapse=", ")))
   #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df$san.prop[!is.na(hist.df$san.prop)]>0)))
@@ -61,10 +61,13 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
   if(length(hist.df[which.max(hist.df$san.prop),1])==0){
     new.sd=dp_estimate_sd(x,epsilon/2,delta/2,c(2^(-15),2^(15)))
-    warning(paste0(paste0(" max san prop is ", max(hist.df$san.prop),
+    warning(paste0("orginial hist.df is",paste0(hist.df.orig[hist.df.orig$san.prop==max(hist.df.orig$san.prop,na.rm=T),],collapse=", "),
+                   "perturbed is ",paste0(hist.df[hist.df$san.prop==max(hist.df$san.prop,na.rm=T),],collapse=", ")),
+      paste0(" max san prop is ", max(hist.df$san.prop),
                           " max hist df is ",paste(dim(hist.df[hist.df$san.prop==max(hist.df$san.prop,na.rm=T),]),collapse=", ")),
                    " biggest.san.bin is",biggest.san.bin,
-                   " because the bounds is ",bound, " max and min is ",max(x),", ",min(x),
+                   " because the bounds is ",bound,
+      "sd is",sd," max and min is ",max(x),", ",min(x),
                    " new.sd is ",new.sd))
 
   }
