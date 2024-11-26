@@ -62,7 +62,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   if(length(hist.df[which.max(hist.df$san.prop),1])==0){
     new.sd=dp_estimate_sd(x,epsilon/2,delta/2,c(2^(-15),2^(15)))
     warning(paste0("orginial hist.df is",paste0(hist.df.orig[hist.df.orig$san.prop==max(hist.df.orig$san.prop,na.rm=T),],collapse=", "),
-                   "perturbed is ",paste0(hist.df[hist.df$san.prop==max(hist.df$san.prop,na.rm=T),],collapse=", ")),
+                   "perturbed is ",paste0(hist.df[hist.df$san.prop==max(hist.df$san.prop,na.rm=T),],collapse=", "),
       paste0(" max san prop is ", max(hist.df$san.prop),
                           " max hist df is ",paste(dim(hist.df[hist.df$san.prop==max(hist.df$san.prop,na.rm=T),]),collapse=", ")),
                    " biggest.san.bin is",biggest.san.bin,
