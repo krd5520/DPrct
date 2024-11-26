@@ -57,7 +57,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
   #l-hat in paper. This is the bin that has the highest sanitized proportion
   #warning(paste0("Hist Dim",paste(dim(hist.df),collapse=", ")," with colnames",paste0(colnames(hist.df),collapse=", ")))
   #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df$san.prop))," pos values ",sum(hist.df$san.prop[!is.na(hist.df$san.prop)]>0)))
-  #warning(paste0("san.prop pos is",paste0(head(hist.df$san.prop[hist.df$san.prop>0]),collapse=", ")))
+  warning(paste0("which max hist df is ",paste(which.max(hist.df$san.prop),collapse=", ")))
   biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
   warning(paste0("biggest.san.bin is",biggest.san.bin,
                  "because the bounds is ",bound, "max and min is ",max(x),", ",min(x)))
