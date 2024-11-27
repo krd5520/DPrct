@@ -70,8 +70,8 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
       warning(paste(
         "discretized x lenfth is is",paste0(length(unique(discretized.x)),collapse=", "),
         "colnames",paste0(colnames(hist.df.orig),collapse=", "),
-        "colnames hist.df is",paste0(colnames(hist.df),collapse=", "),
-        "length unique",paste0(unique(hist.df$san.prop),collapse=", "),
+        "colnames hist.df.orig is",paste0(colnames(hist.df.orig),collapse=", "),
+        "length unique",paste0(unique(hist.df.orig$Freq),collapse=", "),
         "perturbed is ",paste0(hist.df[hist.df$san.prop==max(hist.df$san.prop,na.rm=T),],collapse=", "),
         " max san prop is ", max(hist.df$san.prop),
         " max hist df is ",paste(dim(hist.df[hist.df$san.prop==max(hist.df$san.prop,na.rm=T),]),collapse=", "),
