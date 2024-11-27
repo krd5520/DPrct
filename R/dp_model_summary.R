@@ -397,6 +397,7 @@ iter.out=parallel::mclapply(1:num.iters,
 #combine coefficients into matrix
 #column for each coefficient (including intercept), row for each iteration
 betas=t(sapply(1:num.iters,function(idx)iter.out[[idx]]$betas))
+
 #stack residuals into a vector
 residuals=unlist(lapply(1:num.iters,function(idx)iter.out[[idx]]$residuals))
 
@@ -407,7 +408,7 @@ san.mse=(dp_estimate_sd(residuals,
 nr=nrow(confidential.data) #number of observations
 
 #covariance matrix of coefficients is sigma^2
-cov.mat=(san.mse/(nr-num.coefs))*solve(tcrossprod(t(modMat))/nr)
+cov.mat=(san.mse/(nr-num.coefs))*solve(t(modMat)%*%modMat)/nr)
 colnames(cov.mat)=colnames(modMat)
 rownames(cov.mat)=colnames(modMat)
 
