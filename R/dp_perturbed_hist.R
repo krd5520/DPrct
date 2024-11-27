@@ -44,7 +44,13 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0){
   }else{ #pure-DP and low number of bins don't use a threshold
     threshold=0
   }
-  hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
+  if(sum(hist.df$san.prop>threshold)==0){
+    warning("After noise added, there are no sanitized proportions above the threshold. Sanitized proportions shifted to all be non-negative.")
+    min.san.prop=min(hist.df$san.prop)
+    hist.df$san.prop=hist.df$san.prop+abs(min.san.prop)
+  }else{
+    hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
+  }
   hist.df$san.prop=hist.df$san.prop/(sum(hist.df$san.prop)) #normalize
   return(hist.df)
 }
