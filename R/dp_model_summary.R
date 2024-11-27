@@ -408,7 +408,7 @@ san.mse=(dp_estimate_sd(residuals,
 nr=nrow(confidential.data) #number of observations
 
 #covariance matrix of coefficients is sigma^2
-cov.mat=(san.mse/(nr-num.coefs))*solve(t(modMat)%*%modMat)/nr)
+cov.mat=(san.mse/(nr-num.coefs))*solve(t(modMat)%*%modMat/nr)
 colnames(cov.mat)=colnames(modMat)
 rownames(cov.mat)=colnames(modMat)
 
