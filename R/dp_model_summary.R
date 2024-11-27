@@ -412,7 +412,7 @@ if(sum(colSums(modMat==0)==nr)>0){
 }
 warning(paste("colnames modMat",paste0(colnames(modMat),collapse=", "),"removed colnames are",paste0(names(mod.coefs)[is.na(mod.coefs)],collapse=", ")))
 #covariance matrix of coefficients is sigma^2
-cov.mat=(san.mse/(nr-num.coefs))*solve(t(modMat)%*%modMat/nr))
+cov.mat=(san.mse/(nr-num.coefs))*solve(t(modMat)%*%modMat/nr)
 colnames(cov.mat)=colnames(modMat)
 rownames(cov.mat)=colnames(modMat)
 
