@@ -369,12 +369,11 @@ dp_iter_hybrid=function(conf.model,
   colnames(pred.newdata)=model.vars[-1]
   modMat=stats::model.matrix(predictor.formula, pred.newdata)
 
-  nr=nrow(confidential.data) #number of observations
   #get estimated model coefficients
   mod.coefs=stats::coefficients(conf.model)
   has.coef.name=names(mod.coefs)[!is.na(mod.coefs)] #only columns where coefficient!=NA
   num.coefs=length(has.coef.name)
-  inv.xtx=solve(t(modMat)%*%modMat/nr)
+
   modMat=modMat[,colnames(modMat)%in%has.coef.name]
 #########
 #FUNCTION:attach proxy response to predictor data, fit model, return coefficients
@@ -406,10 +405,13 @@ residuals=unlist(lapply(1:num.iters,function(idx)iter.out[[idx]]$residuals))
 san.mse=(dp_estimate_sd(residuals,
                         epsilon=mse.epsilon,delta=mse.delta,
                         bounds.sd = mse.bd.sd))^2
+nr=nrow(confidential.data) #number of observations
 
+if(sum(colSums(modMat==0)==nr)>0){
+  warning("some columns in modMat have only 0 values")
+}
 #covariance matrix of coefficients is sigma^2
-cov.mat=(san.mse/(nr-num.coefs))*inv.xtx
-cov.mat=cov.mat[!is.na(mod.coefs),!is.na(mod.coefs)]
+cov.mat=(san.mse/(nr-num.coefs))*solve(t(modMat)%*%modMat/nr))
 colnames(cov.mat)=colnames(modMat)
 rownames(cov.mat)=colnames(modMat)
 
