@@ -394,7 +394,7 @@ get_betas_and_residuals=function(coly,
     inv.xtx=NULL
   }
     #return coefficient estimates and residuals
-  return(list("betas"=modb$coefficients,"residuals"=modb$residuals,"inv.xtx"=inv.xtx)
+  return(list("betas"=modb$coefficients,"residuals"=modb$residuals,"inv.xtx"=inv.xtx))
 }
 #######
 
