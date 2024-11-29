@@ -28,19 +28,22 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0){
 
 ###NOTE:: THIS IS CURRENTLY NOT CORRECT FOR delta>0. I will fix it
   hist.df=hist.df[hist.df$Freq>0,,drop=F] #remove bins with 0 counts
-  n=base::sum(hist.df$Freq,na.rm=T) #number of observations
+  nobs=base::sum(hist.df$Freq,na.rm=T) #number of observations
+  if(nobs<10){
+    warning(paste("the number of observations is",nobs))
+  }
   num.bins=base::nrow(hist.df) #number of bins
-  hist.df$san.prop=hist.df$Freq/n
+  hist.df$san.prop=hist.df$Freq/nobs
 
   bins.pos=hist.df$san.prop>0
 
   #add laplace noise
   hist.df$san.prop[bins.pos]=(hist.df$san.prop[bins.pos]+
-                                VGAM::rlaplace(sum(bins.pos),0,2/(n*epsilon)))
+                                VGAM::rlaplace(sum(bins.pos),0,2/(nobs*epsilon)))
 
   #if using delta>0, and number of bins is high enough
   if((delta>0)&(num.bins>(2/delta))){ #use Bun et al. 2016
-    threshold=((2*base::log(2/delta))/(epsilon/n))+(1/n)
+    threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
   }else{ #pure-DP and low number of bins don't use a threshold
     threshold=0
   }
