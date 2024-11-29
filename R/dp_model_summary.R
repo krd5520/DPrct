@@ -422,8 +422,8 @@ if(sum(colSums(modMat==0)==nr)>0){
 inv.xtx=iter.out[[1]]$inv.xtx
 
 cov.mat=(san.mse/(nr-num.coefs))*nr*(inv.xtx)#t(modMat)%*%modMat/nr)
-colnames(cov.mat)=colnames(modMat)
-rownames(cov.mat)=colnames(modMat)
+#colnames(cov.mat)=colnames(modMat)
+#rownames(cov.mat)=colnames(modMat)
 
 
 return(list("iter.betas"=betas[,colnames(betas)%in%has.coef.name],"cov.mat"=cov.mat,"san.mse"=san.mse))
