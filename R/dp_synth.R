@@ -211,7 +211,7 @@ dp_synthdata=function(formula,
                                     bd.sd.list=bd.sd.list,
                                     bd.mean.list=bd.mean.list,
                                     ppart.list=ppart.list,
-                                    num.coefs=num.coefs)
+                                    num.coefs=length(coef.names))
 
 
   epsilon.list=check.lists[[1]]
@@ -224,7 +224,7 @@ dp_synthdata=function(formula,
   if(is.null(cov.mat)==TRUE){ #if not using sanitized residuals
   #get estimate and standard error
     san.summary=matrix(nrow=num.coefs,ncol=9)
-    warning("before dp_coef_stats")
+    warning("before dp_coef_stats in is.null cov.mat==TRUE")
     for(idx in seq(1,length(coef.names))){
       temp.stats=dp_coef_stats(iter.betas[,idx],
                                bounds.sd=bd.sd.list[[idx]],
@@ -247,6 +247,9 @@ dp_synthdata=function(formula,
     }
     cov.mat=stats::vcov(conf.model)
   }else{ #using sanitized residual variance
+
+    warning(paste("before dp_coef_stats in is.null cov.mat==FALSE. class of bd.mean.list=",class(bd.mean.list),"length is",length(bd.mean.list),
+                  "num.coefs is",length(coef.names)))
     san.summary=matrix(nrow=num.coefs,ncol=9)
     for(idx in seq(1,length(coef.names))){
       temp.stats=dp_coef_stats(iter.betas[,idx],
