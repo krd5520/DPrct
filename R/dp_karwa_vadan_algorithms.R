@@ -150,9 +150,9 @@ dp_estimate_sd<-function(x,epsilon,delta=0,bounds.sd){
             iter.bound.breaks[length(iter.bound.breaks)]+1)
 
   #break the data into bins and get frequencies
-  hist.df=data.frame(table(
-    continuous_bins(abs(x.diffs),bin.breaks=breaks.vec,bin.lab=bin.lab)))
-  warning(paste0("in dp_estimate_sd discetrized x:",paste0(head(discretized.x),collapse=", ")))
+  hist.df=as.data.frame(table(
+    continuous_bins(abs(x.diffs),bin.breaks=breaks.vec,bin.lab=bin.lab),useNA="ifany"))
+  warning(paste0("in dp_estimate_sd discetrized x:",paste0(head(hist.df),collapse=", ")))
 
   hist.df=dp_perturbed_hist(hist.df=hist.df,epsilon=epsilon,delta=delta)
 
