@@ -380,20 +380,27 @@ dp_iter_hybrid=function(conf.model,
 get_betas_and_residuals=function(coly,
                                  synth.predictors=synth.data[,model.vars[-1]],
                                  conf.mod=conf.model,
-                                 y.var=response.var){
+                                 y.var=response.var,
+                                 return.invxtx=FALSE){
+
   #bind response to predictors
   iter.data=cbind(synth.predictors,coly)
   colnames(iter.data)=c(colnames(synth.predictors),y.var)
   #fit model
   modb=stats::glm(formula=conf.mod$formula,family = conf.mod$family,data=iter.data)
-  #return coefficient estimates and residuals
-  return(list("betas"=modb$coefficients,"residuals"=modb$residuals))
+  if(as.numeric(return.invxtx)==1){
+    inv.xtx=stats::vcov(modb)*summary(modb)$df.residuals/sum(modb$residuals^2)
+  }else{
+    inv.xtx=NULL
+  }
+    #return coefficient estimates and residuals
+  return(list("betas"=modb$coefficients,"residuals"=modb$residuals,"inv.xtx"=inv.xtx)
 }
 #######
 
 #parallelize apply to each iteration
 iter.out=parallel::mclapply(1:num.iters,
-                            function(x)get_betas_and_residuals(yb[,x]))
+                            function(x)get_betas_and_residuals(yb[,x],return.invxtx = x))
 #combine coefficients into matrix
 #column for each coefficient (including intercept), row for each iteration
 betas=t(sapply(1:num.iters,function(idx)iter.out[[idx]]$betas))
@@ -412,7 +419,9 @@ if(sum(colSums(modMat==0)==nr)>0){
 }
 #warning(paste("colnames modMat",paste0(colnames(modMat),collapse=", "),"removed colnames are",paste0(names(mod.coefs)[is.na(mod.coefs)],collapse=", ")))
 #covariance matrix of coefficients is sigma^2
-cov.mat=(san.mse/(nr-num.coefs))*solve(t(modMat)%*%modMat/nr)
+inv.xtx=iter.out[[1]]$inv.xtx
+
+cov.mat=(san.mse/(nr-num.coefs))*nr*(inv.xtx)#t(modMat)%*%modMat/nr)
 colnames(cov.mat)=colnames(modMat)
 rownames(cov.mat)=colnames(modMat)
 
