@@ -214,6 +214,7 @@ dp_model_summary=function(formula,
     time.values=c(time.values,
                   list("iter.proxy.fit.time"=(iter.proxy.fit.stop-conf.model.stop)[[3]]))
   }
+  warning("in dp_model_summary before check lists")
   san.summ.start=proc.time()
   #check parameter lists are correct length (correct them if not)
       check.lists=check_lists_coeftable(epsilon.list,
