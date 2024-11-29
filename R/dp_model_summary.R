@@ -222,7 +222,7 @@ dp_model_summary=function(formula,
                                         bd.sd.list,
                                         bd.mean.list,
                                         p.partitions.list,
-                                        num.coefs=num.coefs)
+                                        num.coefs=length(coef.names))
       if(just.treatment==TRUE){
         diff.coef.num=ncol(conf.summary)-num.coefs-1
         check.lists=lapply(seq(1,5),

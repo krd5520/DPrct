@@ -60,7 +60,7 @@ check_length_list=function(ls,ls.name,m){
   if(warn==TRUE){
     message(paste0("List of ",ls.name,
                    " values is less than the number of model coefficients to be addressed. ",
-                   "The following list is used instead: ",
+                   "The following ",class(ls), " is used instead: ",
                    paste0(ls[1:m],collapse=", ")))
   }
   return(ls[1:m])
