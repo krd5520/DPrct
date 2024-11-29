@@ -165,10 +165,10 @@ dp_synthdata=function(formula,
                             mse.bd.sd=mse.bd.sd),envir=globalenv())
 
 
-    warning(paste("cov.mat colnames",paste0(colnames(cov.mat),collapse=", "),
-                  " rownames ",paste0(rownames(cov.mat),collapse=", "),
-                  "iter.beta names",paste0(colnames(iter.betas),collapse=", ")))
-    coef.names=colnames(cov.mat)
+    # warning(paste("cov.mat colnames",paste0(colnames(cov.mat),collapse=", "),
+    #               " rownames ",paste0(rownames(cov.mat),collapse=", "),
+    #               "iter.beta names",paste0(colnames(iter.betas),collapse=", ")))
+    coef.names=colnames(iter.betas)
   }else{#don't use residerror
     #print("inside use_san_residerror==FALSE")
     iter.betas=iter_hybrid(conf.model=conf.model,
