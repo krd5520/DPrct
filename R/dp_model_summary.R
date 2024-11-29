@@ -102,7 +102,6 @@ dp_model_summary=function(formula,
                          family="gaussian",
                          data=confidential.data,...)
   ####
-
   if(return.confidential.table==TRUE){
   #get confidential coefficients and summary table
   conf.summary=base::summary(conf.model)$coefficients
@@ -240,6 +239,7 @@ dp_model_summary=function(formula,
       p.partitions.list=check.lists[[6]]
 
 
+      warning(paste("class of bd.mean.list",class(bd.mean.list),"length is",length(bd.mean.list)))
       san.summary=sapply(seq(1,ncol(conf.summary)),
                  function(idx)
                    dp_coef_stats(iter.betas[,idx],
