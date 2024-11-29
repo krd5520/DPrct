@@ -214,7 +214,7 @@ dp_model_summary=function(formula,
     time.values=c(time.values,
                   list("iter.proxy.fit.time"=(iter.proxy.fit.stop-conf.model.stop)[[3]]))
   }
-  warning("in dp_model_summary before check lists")
+  #warning("in dp_model_summary before check lists")
   san.summ.start=proc.time()
   #check parameter lists are correct length (correct them if not)
       check.lists=check_lists_coeftable(epsilon.list,
@@ -240,7 +240,7 @@ dp_model_summary=function(formula,
       p.partitions.list=check.lists[[6]]
 
 
-      warning(paste("class of bd.mean.list",class(bd.mean.list),"length is",length(bd.mean.list)))
+      #warning(paste("class of bd.mean.list",class(bd.mean.list),"length is",length(bd.mean.list)))
       san.summary=sapply(seq(1,ncol(conf.summary)),
                  function(idx)
                    dp_coef_stats(iter.betas[,idx],
