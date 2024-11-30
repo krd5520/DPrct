@@ -240,6 +240,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   stopifnot(sum(alphas)>0&sum(alphas)<1) #significance level must be in (0,1)
 
   num.na=sum(is.na(x))
+  return.NA=FALSE
   if(num.na>0){
     warning(paste("There are ",num.na," NA values in x out of ",length(x)))
     if(num.na==length(x)){
