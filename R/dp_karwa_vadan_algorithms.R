@@ -239,7 +239,21 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   #warning(paste0("epsilons are",paste0(epsilon.vec,collapse = ", ")))
   stopifnot(sum(alphas)>0&sum(alphas)<1) #significance level must be in (0,1)
 
-  n=length(x)
+  num.na=sum(is.na(x))
+  if(num.na>0){
+    warning(paste("There are ",num.na," NA values in x out of ",length(x)))
+    if(num.na==length(x)){
+      return.NA=T
+    }else{
+      x=x[!is.na(x)]
+    }
+  }
+  if(return.NA==TRUE){
+    output=c("san.lower"=NA,"san.upper"=NA)
+    san.point=NA
+    san.sd=NA
+  }else{
+  nobs=length(x)
   if(is.na(x.sd)==TRUE){ #if no standard deviation provided
     san.sd=dp_estimate_sd(x=x,epsilon=epsilon.vec[1],delta=delta.vec[1],bounds.sd=bounds.sd)
   }else{
@@ -268,7 +282,7 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
   x[x<san.range[1]]=san.range[1]
   x[x>san.range[2]]=san.range[2]
 
-  scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*n) #scale param for laplace noise
+  scale.param=abs(san.range[2]-san.range[1])/(epsilon.vec[3]*nobs) #scale param for laplace noise
   if(is.na(san.range[1])==TRUE|is.na(san.range[2])==TRUE|is.na(scale.param)==TRUE|scale.param<0){
     warning(paste("scale parameter is",scale.param," range params are ",paste0(san.range,collapse=", "),"epsilon is ",epsilon.vec[3]))
     stop("Error with the scale parameter to add privacy noise. This may be a result of not enough observations or incorrect bound parameters.")
@@ -276,12 +290,13 @@ dp_confidence_interval=function(x,epsilon.vec,delta.vec=0,alphas=0.05,san.point=
    san.point=mean(x)+VGAM::rlaplace(1,0,scale.param) #sanitized point estimate
 
   #half the width of the confidence interval
-  half.width=((san.sd/sqrt(n))*stats::qnorm(1-(alphas[1]/2)))+
+  half.width=((san.sd/sqrt(nobs))*stats::qnorm(1-(alphas[1]/2)))+
     (scale.param*base::log(1/alphas[2]))
   #upper and lower bounds of CI
   san.lower=san.point-half.width
   san.upper=san.point+half.width
   output=c("san.lower"=san.lower,"san.upper"=san.upper)
+  }
   attr(output,"significance.level")=sum(alphas)
   if(return.point.sd==TRUE){
     output=list("san.CI"=output,"san.coef"=san.point,"san.sd"=san.sd)
