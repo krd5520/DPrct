@@ -153,7 +153,7 @@ dp_synthdata=function(formula,
     mse.bd.sd=tempout[[1]]
     bd.sd.list=tempout[[2]]
 
-    #warning("before dp_iter_hybrid")
+    warning("before dp_iter_hybrid")
     list2env(dp_iter_hybrid(conf.model=conf.model,
                             confidential.data=confidential.data,
                             synth.data=synth.data,
@@ -179,7 +179,7 @@ dp_synthdata=function(formula,
     cov.mat=NULL
     coef.names=colnames(iter.betas)
   }
-  #print("after get iter.betas")
+  warning("after get iter.betas")
 
 
   if(return.time==TRUE){

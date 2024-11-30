@@ -54,7 +54,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
 
     biggest.san.bin=as.numeric(as.character(levels(discretized.x)[1]))
   }else{
-    warning(paste0("discetrized x before hist.df.orig:",paste0(head(discretized.x),collapse=", ")))
+    #warning(paste0("discetrized x before hist.df.orig:",paste0(head(discretized.x),collapse=", ")))
     hist.df.orig=as.data.frame(table(discretized.x,useNA = "ifany"))
     hist.df=dp_perturbed_hist(hist.df=hist.df.orig,epsilon=epsilon,delta=delta)
     #l-hat in paper. This is the bin that has the highest sanitized proportion
@@ -72,7 +72,7 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
                               iter.bound.breaks[length(iter.bound.breaks)]+1))
 
       discretized.x=continuous_bins(x,num.bins=NA,bin.breaks=breaks.vec,bin.lab=bin.labs)
-      warning(paste0("discetrized x:",paste0(head(discretized.x),collapse=", ")))
+      #warning(paste0("discetrized x:",paste0(head(discretized.x),collapse=", ")))
       #break the data into bins and get frequencies
       hist.df.orig=data.frame(table(discretized.x))
       #warning(paste0("hist.df head ",paste0(head(hist.df),collapse=", ")," na values ",sum(is.na(hist.df))," pos values ",sum(hist.df[!is.na(hist.df)]>0)))
@@ -152,7 +152,7 @@ dp_estimate_sd<-function(x,epsilon,delta=0,bounds.sd){
   #break the data into bins and get frequencies
   hist.df=as.data.frame(table(
     continuous_bins(abs(x.diffs),bin.breaks=breaks.vec,bin.lab=bin.lab),useNA="ifany"))
-  warning(paste0("in dp_estimate_sd discetrized x:",paste0(head(hist.df),collapse=", ")))
+  #warning(paste0("in dp_estimate_sd discetrized x:",paste0(head(hist.df),collapse=", ")))
 
   hist.df=dp_perturbed_hist(hist.df=hist.df,epsilon=epsilon,delta=delta)
 
