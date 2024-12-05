@@ -224,7 +224,7 @@ synthdata_perturb_mvhist<-function(data,
         warning(warn.mess)
         treatment.colname="treatment"
       }
-      for(i in seq(1,2)){
+      for(i in c(1,2)){
         warning(paste("inside for loop i=",i))
 #        if((length(treatment.colname)==length(conditions))&(length(treatment.colname)>1)){
 #          warning("treatment.colname has same length as conditions")
@@ -232,9 +232,12 @@ synthdata_perturb_mvhist<-function(data,
                                       assign.type=assign.type,
                                       treatment.colname=conditions[i],
                                       blocks=unlist(blocks.ls[[i]]))#,conditions=c("1","0"))#,#clusters=clusters, ...)
-          warning(paste("done with treatment_assign. head of treat col",paste0(head(c(synth.data[,ncol(synth.data)])),collapse=", ")))
+          warning(paste("done with treatment_assign."
+          "dim of treatment is",paste0(dim(synth.data[,ncol(synth.data),drop=F]),collapse=", "),
+          "synthhead of treat col",paste0(head(c(synth.data[,ncol(synth.data),drop=T])),collapse=", ")))
           synth.data[,ncol(synth.data)]=as.numeric(c(synth.data[,ncol(synth.data)])) #newly added treatment column
-      }
+      warning(paste("done with loop i=",i))
+          }
       treff.rowsums=rowSums(synth.data[,colnames(synth.data)%in%conditions])
       synth.data$control=ifelse(treff.rowsums==0,1,0)
       synth.data[,conditions[3]]=ifelse(treff.rowsums==2,1,0)
