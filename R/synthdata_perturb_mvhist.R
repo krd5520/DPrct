@@ -236,6 +236,7 @@ synthdata_perturb_mvhist<-function(data,
     #### NOTE: double check this handles multiple treatment variables as well?
     }
   }
+  warning(paste0("control group has ",sum(synth.data$control==1)))
 
   warning(paste("colnames are ",paste0(colnames(synth.data),collapse=", ")))
   attr(synth.data,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)
