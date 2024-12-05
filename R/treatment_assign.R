@@ -62,7 +62,7 @@ treatment_assign<-function(synth.data,
       }
       block.df=synth.data[,blocks,drop=F]
       if(base::ncol(block.df)==1){ #if only one blocking variable
-        block.combine=block.df
+        block.combine=unlist(c(block.df))
       }else{ #otherwise combine into one variable
         block.combine=base::apply(block.df,1,function(rw)base::paste(rw,collapse="_"))
       }
