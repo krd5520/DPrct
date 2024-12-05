@@ -210,7 +210,7 @@ synthdata_perturb_mvhist<-function(data,
       treatcol=sapply(seq(1,nrow(treateffs)),function(x)paste0(treateffs[x,],collapse=""))
       #warning(paste("length of treat col is",length(treatcol),"length of data is",nrow(synth.data)))
       synth.data[,treatment.colname]=treatcol
-      #warning("assigned treatment column")
+      warning(paste("unique treatcol is",paste0(unique(synth.data[,treatment.colname]),collapse=", "))
       synth.data[,treatment.colname]=base::trimws(synth.data$treatment)
       warning(paste("control count is",sum(synth.data[,treatment.colname]==" ")))
       synth.data[synth.data[,treatment.colname]==" ",treatment.colname]="control"
