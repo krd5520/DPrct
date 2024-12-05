@@ -200,13 +200,13 @@ synthdata_perturb_mvhist<-function(data,
         conditions=paste0("T",seq(1,length(blocks)))
       }
       for(i in seq(1,length(blocks))){
-        synth.data<-treatment_assign(synth.data=synth.data,
+        synth.data=treatment_assign(synth.data=synth.data,
                                      assign.type=assign.type,
                                      treatment.colname=conditions[i],
                                      blocks=blocks,conditions=c(conditions[i]," "))#,#clusters=clusters, ...)
 
       }
-      synth.data$treatment=sapply(seq(1,nrow(synth.data)),function(x)paste0(tempdf[x,conditions[seq(1,length(blocks))],collapse=""))
+      synth.data$treatment=sapply(seq(1,nrow(synth.data)),function(x)paste0(synth.data[x,conditions[seq(1,length(blocks))],collapse=""))
       synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
       synth.data$treatment=base::trimws(synth.data$treatment)
       cond.idx=length(blocks)+1
@@ -219,7 +219,6 @@ synthdata_perturb_mvhist<-function(data,
       for(cond in c(conditions,"control")){
         synth.data[,cond]=ifelse(synth.data==cond,1,0)
       }
-
     }else{
     synth.data<-treatment_assign(synth.data=synth.data,
                                  assign.type=assign.type,
