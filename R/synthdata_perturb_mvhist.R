@@ -206,7 +206,7 @@ synthdata_perturb_mvhist<-function(data,
                                      blocks=blocks,conditions=c(conditions[i]," "))#,#clusters=clusters, ...)
 
       }
-      synth.data$treatment=paste0(synth.data[,conditions[seq(1,length(blocks))]])
+      synth.data$treatment=sapply(seq(1,nrow(synth.data)),function(x)paste0(tempdf[x,conditions[seq(1,length(blocks))],collapse=""))
       synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
       cond.idx=length(blocks)+1
       for(i in seq(1,length(blocks))){
