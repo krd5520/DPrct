@@ -204,9 +204,8 @@ synthdata_perturb_mvhist<-function(data,
         }else{
           conditions=c("T1","T2","Both")
         }
-      }else{
-        conditions=conditions[conditions!="control"]
       }
+      conditions=conditions[conditions!="control"]
       nblocks=length(blocks)
       if((nblocks>2)|(length(conditions)>3)){
         stop("Only 2X2 factorial design supported")
@@ -226,6 +225,7 @@ synthdata_perturb_mvhist<-function(data,
         treatment.colname="treatment"
       }
       for(i in seq(1,2)){
+        warning(paste("inside for loop i=",i))
 #        if((length(treatment.colname)==length(conditions))&(length(treatment.colname)>1)){
 #          warning("treatment.colname has same length as conditions")
           synth.data=treatment_assign(synth.data=synth.data,
@@ -273,13 +273,16 @@ synthdata_perturb_mvhist<-function(data,
                                  ...)
     #### NOTE: double check this handles multiple treatment variables as well?
     }
+    warning("end within.treatment==TRUE")
   }
+
   #warning(paste0("control group has ",sum(synth.data$control==1)))
 
   #warning(paste("colnames are ",paste0(colnames(synth.data),collapse=", ")))
   attr(synth.data,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)
 
   if(return.time==TRUE){
+    warning("inside return.time==TRUE")
     end.time=proc.time()
     attr(synth.data,"comp.time")=c("mv.hist.time"=mv.hist.time,"san.hist.time"=san.hist.time,
                                    "samp.hist.time"=samp.hist.time,
