@@ -211,15 +211,15 @@ synthdata_perturb_mvhist<-function(data,
       #warning(paste("length of treat col is",length(treatcol),"length of data is",nrow(synth.data)))
       synth.data[,treatment.colname]=treatcol
       warning("assigned treatment column")
-      synth.data$treatment[synth.data==paste0(rep(" ",length(blocks)),collapse="")]="control"
-      warning("before trim")
-      synth.data$treatment=base::trimws(synth.data$treatment)
+      synth.data[,treatment.colname]=base::trimws(synth.data$treatment)
+      warning("after ws")
+      synth.data[synth.data[,treatment.colname]=="",treatment.colname]="control"
 
       cond.idx=length(blocks)+1
       warning("before i,j")
       for(i in seq(1,length(blocks))){
         for(j in seq(i+1, length(blocks))){
-          synth.data$treatment[synth.data$treatment==paste0(conditions[i],conditions[j])]=conditions[cond.idx]
+          synth.data[synth.data$treatment==paste0(conditions[i],conditions[j]),treatment.colname]=conditions[cond.idx]
           cond.idx=cond.idx+1
         }
       }
