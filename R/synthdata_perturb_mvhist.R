@@ -197,36 +197,71 @@ synthdata_perturb_mvhist<-function(data,
   if(with.treatment==TRUE){
     if(factorial==TRUE){
       if(is.null(conditions)==TRUE){
-        conditions=paste0("T",seq(1,length(blocks)))
-      }
-      for(i in seq(1,length(blocks))){
-        synth.data=treatment_assign(synth.data=synth.data,
-                                     assign.type=assign.type,
-                                     treatment.colname=conditions[i],
-                                     blocks=blocks,conditions=c(conditions[i]," "))#,#clusters=clusters, ...)
-
-      }
-      treateffs=synth.data[,colnames(synth.data)%in%conditions]
-      treatcol=sapply(seq(1,nrow(treateffs)),function(x)paste0(treateffs[x,],collapse=""))
-      #warning(paste("length of treat col is",length(treatcol),"length of data is",nrow(synth.data)))
-      synth.data[,treatment.colname]=treatcol
-      warning(paste("unique treatcol is",paste0(unique(unlist(synth.data[,treatment.colname]))),collapse=", "))
-      synth.data[,treatment.colname]=base::trimws(synth.data$treatment)
-      warning(paste("control count is",sum(synth.data[,treatment.colname]==" ")))
-      synth.data[synth.data[,treatment.colname]==" ",treatment.colname]="control"
-
-      cond.idx=length(blocks)+1
-      #warning("before i,j")
-      for(i in seq(1,length(blocks))){
-        for(j in seq(i+1, length(blocks))){
-          synth.data[synth.data$treatment==paste0(conditions[i],conditions[j]),treatment.colname]=conditions[cond.idx]
-          cond.idx=cond.idx+1
+        if(length(treatment.colname)>1){
+          warning(paste("treatment.colname is a vector.",paste0(treatment.colname,collapse=", ")))
+          conditions=treatment.colname
+        }else{
+          conditions=c("T1","T2","Both")
         }
+      }else{
+        conditions=conditions[conditions!="control"]
       }
-     # warning("outside i,j ")
-      for(cond in c(conditions,"control")){
-        synth.data[,cond]=ifelse(synth.data$treatment==cond,1,0)
+      nblocks=length(blocks)
+      if((nblocks>2)|(length(conditions)>3)){
+        stop("Only 2X2 factorial design supported")
       }
+        if(nblocks==0){
+          blocks.ls=list(NULL,NULL)
+        }else if(nblocks==1){
+          blocks.ls=list(blocks,blocks)
+        }else if(nblocks==2){
+         blocks.ls=as.list(blocks)
+        }
+      if(length(treatment.colname)==1){
+        warning("treatment.colname has 1 name")
+      }else{
+        warning("treatment.colnames will be used for names of indicator variables. 'treatment' will summarize the treatment variables.")
+        treatment.colname="treatment"
+      }
+      for(i in seq(1,2)){
+#        if((length(treatment.colname)==length(conditions))&(length(treatment.colname)>1)){
+#          warning("treatment.colname has same length as conditions")
+          synth.data=treatment_assign(synth.data=synth.data,
+                                      assign.type=assign.type,
+                                      treatment.colname=conditions[i],
+                                      blocks=blocks.ls[[i]],conditions=c("1","0"))#,#clusters=clusters, ...)
+          synth.data[,conditions[i]]=as.numeric(synth.data[,conditions[i]])
+      }
+      treff.rowsums=rowSums(synth.data[,colnames(synth.data)%in%conditions])
+      synth.data$control=ifelse(treff.rowsums==0,1,0)
+      synth.data[,conditions[3]]=ifelse(treff.rowsums==2,1,0)
+      # }
+      #
+     #  if(length(treatment.colname)==length(conditions)){
+     #    synth.data$control=ifelse(rowSums(synth.data[,colnames(synth.data)%in%treatment.colname])==0,1,0)
+     #
+     #  }
+     #  treateffs=synth.data[,colnames(synth.data)%in%conditions]
+     #  treatcol=sapply(seq(1,nrow(treateffs)),function(x)paste0(treateffs[x,],collapse=""))
+     #  #warning(paste("length of treat col is",length(treatcol),"length of data is",nrow(synth.data)))
+     #  synth.data[,treatment.colname]=treatcol
+     #  warning(paste("unique treatcol is",paste0(unique(unlist(synth.data[,treatment.colname]))),collapse=", "))
+     #  synth.data[,treatment.colname]=base::trimws(synth.data$treatment)
+     #  warning(paste("control count is",sum(synth.data[,treatment.colname]==" ")))
+     #  synth.data[synth.data[,treatment.colname]==" ",treatment.colname]="control"
+     #
+     #  cond.idx=length(blocks)+1
+     #  #warning("before i,j")
+     #  for(i in seq(1,length(blocks))){
+     #    for(j in seq(i+1, length(blocks))){
+     #      synth.data[synth.data$treatment==paste0(conditions[i],conditions[j]),treatment.colname]=conditions[cond.idx]
+     #      cond.idx=cond.idx+1
+     #    }
+     #  }
+     # # warning("outside i,j ")
+     #  for(cond in c(conditions,"control")){
+     #    synth.data[,cond]=ifelse(synth.data$treatment==cond,1,0)
+     #  }
     }else{
     synth.data=treatment_assign(synth.data=synth.data,
                                  assign.type=assign.type,
@@ -278,4 +313,27 @@ synth_continuous_variation<-function(cat.var){
     }
   }
     return(cont.var)
+}
+
+transform.factorial.treatments=function(data,tr.colnm){
+  n.tr.colnm=length(tr.colnm)
+  treff=data[,colnames(data)%in%tr.colnm,drop=F]
+  treatnum=rowSums(treff,na.rm=T)
+  data$control=ifelse(treatnum==0,1,0)
+  m=ncol(treff)
+  if(m==n.tr.colnm){
+    return(data)
+  }else{
+    trcombo.df=data.frame(matrix(0,ncol=length(tr.colnm)-m,nrow=nrow(data)))
+    colnames(trcombo.df)=tr.colnm[!(tr.colnm %in% colnames(data))]
+    treatnum.ct=data.frame(table(treatnum))
+    cname.idx=0
+    if(length(unique(treatnum))>1){
+      stop("Only 2x2 Factorial designs are currently supported")
+    }
+
+    }
+
+
+  }
 }
