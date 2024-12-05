@@ -107,10 +107,10 @@ handle_synthetic_data<-function(confidential.data,
     }
   }
 
-  if(length(treatment.var)>1){
-    treatment.df=seperate_multiple_treatment(synth.data$treatment,treat.var = treatment.var)
-    synth.data=cbind(synth.data[,-which(colnames(synth.data)=="treatment")],treatment.df)
-  }
+  #if(length(treatment.var)>1){
+  #  treatment.df=seperate_multiple_treatment(synth.data$treatment,treat.var = treatment.var)
+  #  synth.data=cbind(synth.data[,-which(colnames(synth.data)=="treatment")],treatment.df)
+  #}
 
   #if the covariates and treatment is not in the synthetic data sent error
   if(sum(c(model.vars) %in% colnames(synth.data))!=length(model.vars)-1){
