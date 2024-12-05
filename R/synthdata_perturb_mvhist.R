@@ -196,7 +196,7 @@ synthdata_perturb_mvhist<-function(data,
   samp.hist.time=(samp.hist.stop-san.hist.stop)[[3]]
   if(with.treatment==TRUE){
     if(factorial==TRUE){
-      warning("in factorial==TRUE")
+      #warning("in factorial==TRUE")
       if(is.null(conditions)==TRUE){
         if(length(treatment.colname)>1){
           #warning(paste("treatment.colname is a vector.",paste0(treatment.colname,collapse=", ")))
@@ -225,21 +225,20 @@ synthdata_perturb_mvhist<-function(data,
         treatment.colname="treatment"
       }
       for(i in c(1,2)){
-        warning(paste("inside for loop i=",i))
+        #warning(paste("inside for loop i=",i))
 #        if((length(treatment.colname)==length(conditions))&(length(treatment.colname)>1)){
 #          warning("treatment.colname has same length as conditions")
           synth.data=treatment_assign(synth.data=synth.data,
                                       assign.type=assign.type,
                                       treatment.colname=conditions[i],
                                       blocks=unlist(blocks.ls[[i]]))#,conditions=c("1","0"))#,#clusters=clusters, ...)
-          warning(paste("done with treatment_assign.",
-          "dim of treatment is",paste0(dim(synth.data[,ncol(synth.data),drop=F]),collapse=", "),
-          "synthhead of treat col",paste0(head(c(synth.data[,ncol(synth.data),drop=T])),collapse=", ")))
+          # warning(paste("done with treatment_assign.",
+          # "dim of treatment is",paste0(dim(synth.data[,ncol(synth.data),drop=F]),collapse=", "),
+          # "synthhead of treat col",paste0(head(c(synth.data[,ncol(synth.data),drop=T])),collapse=", ")))
           tr.col=as.numeric(c(unlist(synth.data[,ncol(synth.data)]))) #newly added treatment column
-          warning("made column numeric")
+
           synth.data[,ncol(synth.data)]=tr.col
           #colnames(synth.data)=c(colnames(synth.data)[-1],conditions[i])
-      warning(paste("done with loop i=",i))
           }
       treff.rowsums=rowSums(synth.data[,colnames(synth.data)%in%conditions])
       synth.data$control=ifelse(treff.rowsums==0,1,0)
@@ -272,7 +271,7 @@ synthdata_perturb_mvhist<-function(data,
      #    synth.data[,cond]=ifelse(synth.data$treatment==cond,1,0)
      #  }
     }else{
-      warning("factorial==FALSE")
+      #warning("factorial==FALSE")
     synth.data=treatment_assign(synth.data=synth.data,
                                  assign.type=assign.type,
                                  treatment.colname=treatment.colname,
@@ -280,7 +279,7 @@ synthdata_perturb_mvhist<-function(data,
                                  ...)
     #### NOTE: double check this handles multiple treatment variables as well?
     }
-    warning("end within.treatment==TRUE")
+    #warning("end within.treatment==TRUE")
   }
 
   #warning(paste0("control group has ",sum(synth.data$control==1)))
@@ -289,7 +288,7 @@ synthdata_perturb_mvhist<-function(data,
   attr(synth.data,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)
 
   if(return.time==TRUE){
-    warning("inside return.time==TRUE")
+    #warning("inside return.time==TRUE")
     end.time=proc.time()
     attr(synth.data,"comp.time")=c("mv.hist.time"=mv.hist.time,"san.hist.time"=san.hist.time,
                                    "samp.hist.time"=samp.hist.time,

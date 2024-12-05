@@ -26,7 +26,6 @@
 
 dp_perturbed_hist<-function(hist.df,epsilon,delta=0){
 
-###NOTE:: THIS IS CURRENTLY NOT CORRECT FOR delta>0. I will fix it
   hist.df=hist.df[hist.df$Freq>0,,drop=F] #remove bins with 0 counts
   nobs=base::sum(hist.df$Freq,na.rm=T) #number of observations
   if(nobs<10){
