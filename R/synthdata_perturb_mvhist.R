@@ -231,9 +231,9 @@ synthdata_perturb_mvhist<-function(data,
           synth.data=treatment_assign(synth.data=synth.data,
                                       assign.type=assign.type,
                                       treatment.colname=conditions[i],
-                                      blocks=unlist(blocks.ls[[i]]),conditions=c("1","0"))#,#clusters=clusters, ...)
-          warning("done with treatment_assign")
-          synth.data[,ncol(synth.data)]=as.numeric(synth.data[,ncol(synth.data)]) #newly added treatment column
+                                      blocks=unlist(blocks.ls[[i]]))#,conditions=c("1","0"))#,#clusters=clusters, ...)
+          warning(paste("done with treatment_assign. head of treat col",paste0(head(c(synth.data[,ncol(synth.data)])),collapse=", ")))
+          synth.data[,ncol(synth.data)]=as.numeric(c(synth.data[,ncol(synth.data)])) #newly added treatment column
       }
       treff.rowsums=rowSums(synth.data[,colnames(synth.data)%in%conditions])
       synth.data$control=ifelse(treff.rowsums==0,1,0)
