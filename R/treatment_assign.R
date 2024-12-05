@@ -60,8 +60,8 @@ treatment_assign<-function(synth.data,
       if(base::is.logical(blocks)&&base::sum(blocks)==0){
         stop("No blocking variables provided.")
       }
-      block.df=synth.data[,blocks]
-      if(base::is.data.frame(block.df)==FALSE){ #if only one blocking variable
+      block.df=synth.data[,blocks,drop=F]
+      if(base::ncol(block.df)==1){ #if only one blocking variable
         block.combine=block.df
       }else{ #otherwise combine into one variable
         block.combine=base::apply(block.df,1,function(rw)base::paste(rw,collapse="_"))
@@ -71,8 +71,8 @@ treatment_assign<-function(synth.data,
     #repeat block checks above on clusters if clusters used in treatment assignment
     if(base::grepl("cluster",assign.type)==T){
       stopifnot(!is.na(clusters))
-      cluster.df=synth.data[,clusters]
-      if(base::is.data.frame(cluster.df)==FALSE){
+      cluster.df=synth.data[,clusters,drop=F]
+      if(base::ncol(cluster.df)==1){
         cluster.combine=cluster.df
       }else{
         cluster.combine=base::apply(cluster.df,1,function(rw)paste(rw,collapse="_"))
@@ -83,6 +83,7 @@ treatment_assign<-function(synth.data,
     num.rows=base::length(synth.data)
     synth.data=base::data.frame(synth.data,"treat"=base::rep(NA,num.rows))
   }
+  warning("done processing cluster and block inputs.")
 
   # assign treatments using randomizr functions depending on assign.type
   if(assign.type=="simple"){ #simple assignment

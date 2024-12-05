@@ -232,7 +232,7 @@ synthdata_perturb_mvhist<-function(data,
                                       assign.type=assign.type,
                                       treatment.colname=conditions[i],
                                       blocks=blocks.ls[[i]],conditions=c("1","0"))#,#clusters=clusters, ...)
-          synth.data[,conditions[i]]=as.numeric(synth.data[,conditions[i]])
+          synth.data[,ncol(synth.data)]=as.numeric(synth.data[,ncol(synth.data)]) #newly added treatment column
       }
       treff.rowsums=rowSums(synth.data[,colnames(synth.data)%in%conditions])
       synth.data$control=ifelse(treff.rowsums==0,1,0)
