@@ -236,7 +236,8 @@ synthdata_perturb_mvhist<-function(data,
           "dim of treatment is",paste0(dim(synth.data[,ncol(synth.data),drop=F]),collapse=", "),
           "synthhead of treat col",paste0(head(c(synth.data[,ncol(synth.data),drop=T])),collapse=", ")))
           tr.col=as.numeric(c(synth.data[,ncol(synth.data)])) #newly added treatment column
-          synth.data=cbind(synth.data[,seq(1,ncol(synth.data)-1)],data.frame(tr.col))
+          warning("made column numeric")
+          synth.data=cbind(synth.data[,seq(1,ncol(synth.data)-1)],data.frame(unlist(tr.col)))
           colnames(synth.data)=c(colnames(synth.data)[-1],conditions[i])
       warning(paste("done with loop i=",i))
           }
