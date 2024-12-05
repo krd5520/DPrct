@@ -214,6 +214,7 @@ synthdata_perturb_mvhist<-function(data,
       synth.data$treatment=base::trimws(synth.data$treatment)
 
       cond.idx=length(blocks)+1
+      warning("before i,j")
       for(i in seq(1,length(blocks))){
         for(j in seq(i+1, length(blocks))){
           synth.data$treatment[synth.data$treatment==paste0(conditions[i],conditions[j])]=conditions[cond.idx]
