@@ -208,6 +208,7 @@ synthdata_perturb_mvhist<-function(data,
       }
       synth.data$treatment=sapply(seq(1,nrow(synth.data)),function(x)paste0(tempdf[x,conditions[seq(1,length(blocks))],collapse=""))
       synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
+      synth.data$treatment=base::trimws(synth.data$treatment)
       cond.idx=length(blocks)+1
       for(i in seq(1,length(blocks))){
         for(j in seq(2, length(blocks))){
