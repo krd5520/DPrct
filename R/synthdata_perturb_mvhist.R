@@ -210,7 +210,7 @@ synthdata_perturb_mvhist<-function(data,
       synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
       cond.idx=length(blocks)+1
       for(i in seq(1,length(blocks))){
-        for(j in seq(2, length(blocks)){
+        for(j in seq(2, length(blocks))){
           synth.data$treatment[synth.data$treatment==paste0(conditions[i],conditions[j])]=conditions[cond.idx]
           cond.idx=cond.idx+1
         }
