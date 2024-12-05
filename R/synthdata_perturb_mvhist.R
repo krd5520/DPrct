@@ -61,7 +61,7 @@ synthdata_perturb_mvhist<-function(data,
                                    num.bin=NULL,
                                    bin.param=NA,
                                    add.cont.variation=FALSE,
-                                   treatment.colname="treatment",
+                                    treatment.colname="treatment",
                                    with.treatment=TRUE,
                                    assign.type="simple",
                                    return.time=FALSE,
@@ -70,6 +70,8 @@ synthdata_perturb_mvhist<-function(data,
                                    blocks=NULL,
                                    clusters=NULL,
                                    block.sizes=NULL,
+                                   factorial=FALSE,
+                                   conditions=NULL,
                                    ...){
 
   start.time=proc.time()
@@ -193,12 +195,39 @@ synthdata_perturb_mvhist<-function(data,
   samp.hist.stop=proc.time()
   samp.hist.time=(samp.hist.stop-san.hist.stop)[[3]]
   if(with.treatment==TRUE){
+    if(factorial==TRUE){
+      if(is.null(conditions)==TRUE){
+        conditions=paste0("T",seq(1,length(blocks)))
+      }
+      for(i in seq(1,length(blocks))){
+        synth.data<-treatment_assign(synth.data=synth.data,
+                                     assign.type=assign.type,
+                                     treatment.colname=conditions[i],
+                                     blocks=blocks,conditions=c(condition[i]," "),#clusters=clusters,
+                                     ...)
+
+      }
+      synth.data$treatment=paste0(synth.data[,conditions[seq(1,length(blocks))]])
+      synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
+      cond.idx=length(blocks)+1
+      for(i in seq(1,length(blocks))){
+        for(j in seq(2, length(blocks)){
+          synth.data$treatment[synth.data$treatment==paste0(conditions[i],conditions[j])]=conditions[cond.idx]
+          cond.idx=cond.idx+1
+        }
+      }
+      for(cond in c(conditions,"control")){
+        synth.data[,cond]=ifelse(synth.data==cond,1,0)
+      }
+
+    }else{
     synth.data<-treatment_assign(synth.data=synth.data,
                                  assign.type=assign.type,
                                  treatment.colname=treatment.colname,
                                  blocks=blocks,#clusters=clusters,
                                  ...)
     #### NOTE: double check this handles multiple treatment variables as well?
+    }
   }
 
   attr(synth.data,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)

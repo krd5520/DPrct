@@ -54,6 +54,7 @@ simulate_response_glm=function(mod,newdata,predictor.formula=NULL,
       cov.mat=cov.mat*diag(x=1,nrow=nrow(modMat))
     }
 
+
     sim.response=t(mvtnorm::rmvnorm(nsim,
                                     modMat%*%matrix(mod.coefs[names(mod.coefs)%in% has.coef.name],
                                                     ncol=1), cov.mat))
