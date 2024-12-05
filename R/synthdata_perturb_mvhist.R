@@ -206,7 +206,9 @@ synthdata_perturb_mvhist<-function(data,
                                      blocks=blocks,conditions=c(conditions[i]," "))#,#clusters=clusters, ...)
 
       }
-      synth.data$treatment=sapply(seq(1,nrow(synth.data)),function(x)paste0(synth.data[x,conditions[seq(1,length(blocks))],collapse=""))
+      treateffs=synth.data[,colnames(synth.data)%in%conditions]
+      treatcol=sapply(seq(1,nrow(synth.data)),function(x)paste0(treateffs[x,],collapse=""))
+      synth.data$treatment=treatcol
       synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
       synth.data$treatment=base::trimws(synth.data$treatment)
       cond.idx=length(blocks)+1
