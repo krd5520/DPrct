@@ -215,11 +215,12 @@ synthdata_perturb_mvhist<-function(data,
 
       cond.idx=length(blocks)+1
       for(i in seq(1,length(blocks))){
-        for(j in seq(2, length(blocks))){
+        for(j in seq(i+1, length(blocks))){
           synth.data$treatment[synth.data$treatment==paste0(conditions[i],conditions[j])]=conditions[cond.idx]
           cond.idx=cond.idx+1
         }
       }
+      warning("outside i,j ")
       for(cond in c(conditions,"control")){
         synth.data[,cond]=ifelse(synth.data$treatment==cond,1,0)
       }
