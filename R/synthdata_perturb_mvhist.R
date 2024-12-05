@@ -212,6 +212,7 @@ synthdata_perturb_mvhist<-function(data,
       synth.data$treatment=treatcol
       synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
       synth.data$treatment=base::trimws(synth.data$treatment)
+
       cond.idx=length(blocks)+1
       for(i in seq(1,length(blocks))){
         for(j in seq(2, length(blocks))){
@@ -220,7 +221,7 @@ synthdata_perturb_mvhist<-function(data,
         }
       }
       for(cond in c(conditions,"control")){
-        synth.data[,cond]=ifelse(synth.data==cond,1,0)
+        synth.data[,cond]=ifelse(synth.data$treatment==cond,1,0)
       }
     }else{
     synth.data=treatment_assign(synth.data=synth.data,
