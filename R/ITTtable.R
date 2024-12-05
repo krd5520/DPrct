@@ -42,9 +42,9 @@ ITTtable_oneresponse=function(data,reg.model,family="gaussian",
   treat.vars.factors=sapply(data[,c(treat.vars)],
                             function(x)base::is.factor(x)|base::is.character(x))
   if(sum(treat.vars.factors)==0){ #if no treat.vars are factors
-    if(length(base::setdiff(treat.vars,mod.coefs))>0){ #check all treat.vars in formula
-      stop("Specified treatment variables are not in formula.")
-    }
+    # if(length(base::setdiff(treat.vars,mod.coefs))>0){ #check all treat.vars in formula
+    #   stop("Specified treatment variables are not in formula.")
+    # }
     get.coefs=treat.vars
   }else{ #if there are/is treat.vars that are/is factor
     get.coefs=treat.vars[!treat.vars.factors] #not factor treat.vars
