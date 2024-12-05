@@ -315,25 +315,3 @@ synth_continuous_variation<-function(cat.var){
     return(cont.var)
 }
 
-transform.factorial.treatments=function(data,tr.colnm){
-  n.tr.colnm=length(tr.colnm)
-  treff=data[,colnames(data)%in%tr.colnm,drop=F]
-  treatnum=rowSums(treff,na.rm=T)
-  data$control=ifelse(treatnum==0,1,0)
-  m=ncol(treff)
-  if(m==n.tr.colnm){
-    return(data)
-  }else{
-    trcombo.df=data.frame(matrix(0,ncol=length(tr.colnm)-m,nrow=nrow(data)))
-    colnames(trcombo.df)=tr.colnm[!(tr.colnm %in% colnames(data))]
-    treatnum.ct=data.frame(table(treatnum))
-    cname.idx=0
-    if(length(unique(treatnum))>1){
-      stop("Only 2x2 Factorial designs are currently supported")
-    }
-
-    }
-
-
-  }
-}
