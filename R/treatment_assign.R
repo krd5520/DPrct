@@ -92,6 +92,7 @@ treatment_assign<-function(synth.data,
     synth.data$treat=randomizr::complete_ra(N=num.rows,num_arms=num.arms,...)
   }else if(assign.type=="block"){ #block assignment
     synth.data$treat=randomizr::block_ra(blocks=block.combine,num_arms=num.arms,...)
+    warning("finished block assignment")
   }else if(assign.type=="cluster"){ #cluster assignment
     synth.data$treat=randomizr::cluster_ra(clusters=cluster.combine,num_arms=num.arms,...)
   }else if(assign.type=="block_and_cluster"){ #block and cluster assignment
