@@ -216,7 +216,7 @@ synthdata_perturb_mvhist<-function(data,
         }else if(nblocks==1){
           blocks.ls=list(blocks,blocks)
         }else if(nblocks==2){
-         blocks.ls=as.list(blocks)
+         blocks.ls=list(blocks[1],blocks[2])
         }
       if(length(treatment.colname)!=1){
         warn.mess=paste("column named 'treatment' will summarize the treatment variables.",
