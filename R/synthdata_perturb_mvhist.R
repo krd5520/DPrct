@@ -203,8 +203,7 @@ synthdata_perturb_mvhist<-function(data,
         synth.data<-treatment_assign(synth.data=synth.data,
                                      assign.type=assign.type,
                                      treatment.colname=conditions[i],
-                                     blocks=blocks,conditions=c(condition[i]," "),#clusters=clusters,
-                                     ...)
+                                     blocks=blocks,conditions=c(condition[i]," "))#,#clusters=clusters, ...)
 
       }
       synth.data$treatment=paste0(synth.data[,conditions[seq(1,length(blocks))]])
