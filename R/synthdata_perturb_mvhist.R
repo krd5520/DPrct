@@ -212,7 +212,7 @@ synthdata_perturb_mvhist<-function(data,
       synth.data[,treatment.colname]=treatcol
       #warning("assigned treatment column")
       synth.data[,treatment.colname]=base::trimws(synth.data$treatment)
-      #warning("after ws")
+      warning(paste("control count is",sum(synth.data[,treatment.colname]=="")))
       synth.data[synth.data[,treatment.colname]=="",treatment.colname]="control"
 
       cond.idx=length(blocks)+1
