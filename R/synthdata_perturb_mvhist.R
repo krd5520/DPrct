@@ -208,7 +208,7 @@ synthdata_perturb_mvhist<-function(data,
       }
       treateffs=synth.data[,colnames(synth.data)%in%conditions]
       treatcol=sapply(seq(1,nrow(treateffs)),function(x)paste0(treateffs[x,],collapse=""))
-      warning(paste("length of treat col is",length(treatcol),"length of data is",nrows(synth.data)))
+      warning(paste("length of treat col is",length(treatcol),"length of data is",nrow(synth.data)))
       synth.data[,treatment.colname]=treatcol
       warning("assigned treatment column")
       synth.data$treatment[synth.data=paste0(rep(" ",length(blocks)),collapse="")]="control"
