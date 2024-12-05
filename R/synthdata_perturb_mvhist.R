@@ -196,9 +196,10 @@ synthdata_perturb_mvhist<-function(data,
   samp.hist.time=(samp.hist.stop-san.hist.stop)[[3]]
   if(with.treatment==TRUE){
     if(factorial==TRUE){
+      warning("in factorial==TRUE")
       if(is.null(conditions)==TRUE){
         if(length(treatment.colname)>1){
-          warning(paste("treatment.colname is a vector.",paste0(treatment.colname,collapse=", ")))
+          #warning(paste("treatment.colname is a vector.",paste0(treatment.colname,collapse=", ")))
           conditions=treatment.colname
         }else{
           conditions=c("T1","T2","Both")
@@ -217,10 +218,11 @@ synthdata_perturb_mvhist<-function(data,
         }else if(nblocks==2){
          blocks.ls=as.list(blocks)
         }
-      if(length(treatment.colname)==1){
-        warning("treatment.colname has 1 name")
-      }else{
-        warning("treatment.colnames will be used for names of indicator variables. 'treatment' will summarize the treatment variables.")
+      if(length(treatment.colname)!=1){
+        warn.mess=paste("column named 'treatment' will summarize the treatment variables.",
+                        ifelse(length(treatment.colname)==0," ",
+                               "Inputted treatment.colname will be the column names of the indicator columns."))
+        warning(warn.mess)
         treatment.colname="treatment"
       }
       for(i in seq(1,2)){
@@ -263,15 +265,16 @@ synthdata_perturb_mvhist<-function(data,
      #    synth.data[,cond]=ifelse(synth.data$treatment==cond,1,0)
      #  }
     }else{
+      warning("factorial==FALSE")
     synth.data=treatment_assign(synth.data=synth.data,
                                  assign.type=assign.type,
                                  treatment.colname=treatment.colname,
-                                 blocks=blocks,#clusters=clusters,
+                                 blocks=blocks,conditions=conditions,#clusters=clusters,
                                  ...)
     #### NOTE: double check this handles multiple treatment variables as well?
     }
   }
-  warning(paste0("control group has ",sum(synth.data$control==1)))
+  #warning(paste0("control group has ",sum(synth.data$control==1)))
 
   #warning(paste("colnames are ",paste0(colnames(synth.data),collapse=", ")))
   attr(synth.data,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)

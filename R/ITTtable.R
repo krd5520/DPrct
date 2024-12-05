@@ -94,6 +94,10 @@ ITTtable_oneresponse=function(data,reg.model,family="gaussian",
   adj.p=base::pmin(base::unname(pval)*bonferroni.npvals,1)
 
 
+  warning(paste("get estimates",paste0(estimates,collapse=", "),
+                "get stderr",paste0(se.str,collapse=", "),
+                "get pvals",paste0(adj.p,collapse=", "),
+                "get treatment",paste0(rownames(sub.summary),collapse=", ")))
 
   tab.out=data.frame("ITT"=estimates,
                      "StdErr"=se.str,
