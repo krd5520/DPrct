@@ -210,20 +210,20 @@ synthdata_perturb_mvhist<-function(data,
       treatcol=sapply(seq(1,nrow(treateffs)),function(x)paste0(treateffs[x,],collapse=""))
       #warning(paste("length of treat col is",length(treatcol),"length of data is",nrow(synth.data)))
       synth.data[,treatment.colname]=treatcol
-      warning("assigned treatment column")
+      #warning("assigned treatment column")
       synth.data[,treatment.colname]=base::trimws(synth.data$treatment)
-      warning("after ws")
+      #warning("after ws")
       synth.data[synth.data[,treatment.colname]=="",treatment.colname]="control"
 
       cond.idx=length(blocks)+1
-      warning("before i,j")
+      #warning("before i,j")
       for(i in seq(1,length(blocks))){
         for(j in seq(i+1, length(blocks))){
           synth.data[synth.data$treatment==paste0(conditions[i],conditions[j]),treatment.colname]=conditions[cond.idx]
           cond.idx=cond.idx+1
         }
       }
-      warning("outside i,j ")
+     # warning("outside i,j ")
       for(cond in c(conditions,"control")){
         synth.data[,cond]=ifelse(synth.data$treatment==cond,1,0)
       }
@@ -237,6 +237,7 @@ synthdata_perturb_mvhist<-function(data,
     }
   }
 
+  warning(paste("colnames are ",paste0(colnames(synth.data),collapse=", ")))
   attr(synth.data,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)
 
   if(return.time==TRUE){
