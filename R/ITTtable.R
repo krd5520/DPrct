@@ -257,10 +257,11 @@ ITTtable=function(data,reg.models=NULL,
   if(length(response.vars)==1){
     data[,response.vars]=as.numeric(as.character(data[,response.vars]))
   }else{
-    warning(paste("in ITTtable.R apply error. Dim of data[,response.vars]=",paste0(dim(data[,response.vars,drop=F])),
-                  "There are ",length(response.vars)," response.variables".))
+    warning("before potential ITTtable.R apply error")
+    warning(paste("length of data is",length(data),"There are ",length(response.vars)," response.variables:",paste0(response.vars)))
   data[,response.vars]=apply(data[,response.vars,drop=F],2,function(x)(as.numeric(as.character(x))))
   }
+  warning("after postional apply error")
   ####
 
   ### deal with families input ###
