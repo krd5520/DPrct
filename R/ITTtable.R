@@ -257,17 +257,17 @@ ITTtable=function(data,reg.models=NULL,
   if(length(response.vars)==1){
     data[,response.vars]=as.numeric(as.character(data[,response.vars]))
   }else{
-    warning("before potential ITTtable.R apply error")
-    warning(paste("length of data is",length(data),"There are ",length(response.vars)," response.variables:",paste0(response.vars)))
+    #warning("before potential ITTtable.R apply error")
+    #warning(paste("length of data is",length(data),"There are ",length(response.vars)," response.variables:",paste0(response.vars)))
   data[,response.vars]=apply(data[,response.vars,drop=F],2,function(x)(as.numeric(as.character(x))))
   }
-  warning("after postional apply error")
+  #warning("after postional apply error")
   ####
 
   ### deal with families input ###
   if(length(families)!=length(reg.models)){ #if families and reg.models have unequal length
     if(length(families)==1){ #if length(families)==1, repeat it for all reg.models
-      warning("Only one family value supplied. It is used for all models.")
+      #warning("Only one family value supplied. It is used for all models.")
       families=rep(families,length(reg.models))
     }else{ #Error for unequal families and reg.models length
       stop(paste0("Length of families, ",length(families),
