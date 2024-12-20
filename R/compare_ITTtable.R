@@ -95,7 +95,7 @@ compare_ITTdata=function(data.list,
     ref.indic=table.combine$data==ci.overlap.ref.name
     ref.tab=table.combine[ref.indic,]
     table.combine$ci.overlap=1 #initialize confidence interval overlap.
-    not.ref=unique(table.combine$data)
+    not.ref=unique(as.character(table.combine$data))
     not.ref=not.ref[not.ref!=ci.overlap.ref.name]
     warning(paste("In compare_ITT. not.ref is",paste0(not.ref,collapse=", ")," and table.combine$data is",paste(unique(table.combine$data),collapes=", ")))
     for(dta in not.ref){ #for data which is not the reference data...
