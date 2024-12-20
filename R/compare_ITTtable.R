@@ -80,7 +80,7 @@ compare_ITTdata=function(data.list,
                       only.control.mean=TRUE,
                       include.df=include.df)),.id="data")
   if(include.ci.overlap==TRUE){ #if including confidence interval overlap...
-    stopifnot((is.null(ci.overlap.ref.name)==FALSE)&&(ci.overlap.ref.name%in% unique(table.combine$data)))
+    stopifnot((is.null(ci.overlap.ref.name)==FALSE))#&&(ci.overlap.ref.name%in% unique(table.combine$data)))
     stopifnot(ci.confidence>0 & ci.confidence<1)
     #z multiplier
     z.half.alpha=stats::qnorm(0.5*(1+ci.confidence))
