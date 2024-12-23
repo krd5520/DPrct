@@ -79,6 +79,10 @@ compare_ITTdata=function(data.list,
                       stderr.func=stderr.func,
                       only.control.mean=TRUE,
                       include.df=include.df)),.id="data")
+  if(setequal(unique(table.combine$data),names(table.data.list))==FALSE){
+    table.combine$data=as.factor(table.combine$data)
+    levels(table.combine$data)=names(table.data.list)
+  }
   if(include.ci.overlap==TRUE){ #if including confidence interval overlap...
     stopifnot((is.null(ci.overlap.ref.name)==FALSE))#&&(ci.overlap.ref.name%in% unique(table.combine$data)))
     stopifnot(ci.confidence>0 & ci.confidence<1)
