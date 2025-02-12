@@ -105,7 +105,6 @@ synthdata_perturb_mvhist<-function(data,
   if(perturb==TRUE){
     freq.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta)
   }else{
-    freq.df=hist.df
     freq.df$san.prop=freq.df$Freq/sum(freq.df$Freq)
   }
 
