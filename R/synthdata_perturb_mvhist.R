@@ -102,7 +102,7 @@ synthdata_perturb_mvhist<-function(data,
   }
   mv.hist.stop=proc.time()
   mv.hist.time=(mv.hist.stop-start.time)[[3]]
-  if(perturb==True){
+  if(perturb==TRUE){
     freq.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta)
   }else{
     freq.df=hist.df
