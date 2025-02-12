@@ -33,6 +33,8 @@
 #'      is only needed if \code{assign.type=="block"} or \code{=="block_and_cluster"}.
 #' @param block.sizes sample size of each block level. If NULL, then the size of the
 #'      blocks in the \code{data} will be used.
+#' @param perturb is an indicator as to whether the histogram should be perturbed to
+#'      satisfy DP. Otherwise it will just be a resampled dataset.
 #' @return a synthetic data.frame for confidential data (inputted as \code{data})
 #'    that satisfies (\code{epsilon},\code{delta})-DP using the perturbed
 #'    multivariate histogram method.
@@ -72,6 +74,7 @@ synthdata_perturb_mvhist<-function(data,
                                    block.sizes=NULL,
                                    factorial=FALSE,
                                    conditions=NULL,
+                                   perturb=T,
                                    ...){
 
   start.time=proc.time()
@@ -99,7 +102,13 @@ synthdata_perturb_mvhist<-function(data,
   }
   mv.hist.stop=proc.time()
   mv.hist.time=(mv.hist.stop-start.time)[[3]]
-  freq.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta)
+  if(perturb==True){
+    freq.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta)
+  }else{
+    freq.df=hist.df
+    freq.df$san.prop=freq.df$Freq/sum(freq.df$Freq)
+  }
+
   san.hist.stop=proc.time()
   san.hist.time=(san.hist.stop-mv.hist.stop)[[3]]
 

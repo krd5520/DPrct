@@ -33,8 +33,8 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL){
       intervals=base::levels(cat.col) #get levels for intervals
       #get the boundary points for the intervals
       boundaries= base::as.numeric(
-        base::gsub("\\(|\\]|\\[|\\)","",
-                   base::unlist(base::strsplit(intervals,","))[c(1,base::seq(2,2*num.bins,2))]))
+        unique(base::gsub("\\(|\\]|\\[|\\)","",
+                   base::unlist(base::strsplit(intervals,",")))))
       boundaries[1]=base::min(cont.col) #change first lower bound to be minimum cont.col value
       bin.labs<-0.5*(boundaries[base::seq(2,num.bins+1)]+boundaries[base::seq(1,num.bins)])
     }
