@@ -40,6 +40,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       warning(paste0("No continuous variables detected. Dimension of cont.data is...",dim(cont.data),"... and length of continuous.vars is...",length(continuous.vars)))
 
     }
+
     #number of continuous variables
     num.continuous=ncol(cont.data)
   }
@@ -63,6 +64,11 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     }else{ #if num.bin not supplied bin.param must be a single value between 0 and 1
       stopifnot(bin.param>0&bin.param<1)
       num.bin=base::rep(base::ceiling((base::nrow(cont.data)^bin.param)),num.continuous)
+    }
+    cont.gr.bin=sapply(seq(1,num.continuous),function(i)length(unique(cont.data[,i]))>num.bin[i])
+    if(sum(!cont.gr.bin)>0){
+      cont.data=cont.data[,cont.gr.bin,drop=F]
+      num.continuous=ncol(cont.data)
     }
     which.cont=base::colnames(data)%in%base::colnames(cont.data) #logical if continuous variable
     data[,which.cont]=base::sapply(base::seq(1,num.continuous),
