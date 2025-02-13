@@ -65,7 +65,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       stopifnot(bin.param>0&bin.param<1)
       num.bin=base::rep(base::ceiling((base::nrow(cont.data)^bin.param)),num.continuous)
     }
-    if(check.cont=T){
+    if(check.cont==T){
     cont.gr.bin=sapply(seq(1,num.continuous),function(i)length(unique(cont.data[,i]))>num.bin[i])
     if(sum(!cont.gr.bin)>0){
       cont.data=cont.data[,cont.gr.bin,drop=F]
