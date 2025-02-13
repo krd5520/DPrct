@@ -43,5 +43,5 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL){
     base::levels(out.col)=base::as.character(bin.labs)
   }
 
-  return(as.numeric(attr(out.col,"levels")))
+  return(as.numeric(out.col))
 }

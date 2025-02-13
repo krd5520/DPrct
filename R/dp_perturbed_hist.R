@@ -26,10 +26,11 @@
 
 dp_perturbed_hist<-function(hist.df,epsilon,delta=0){
 
+  warn.message=NULL
   hist.df=hist.df[hist.df$Freq>0,,drop=F] #remove bins with 0 counts
   nobs=base::sum(hist.df$Freq,na.rm=T) #number of observations
   if(nobs<10){
-    warning(paste("the number of observations is",nobs))
+    warn.message=paste(warn.message,paste("The number of histogram observations is less then 10:",nobs,"\n"))
   }
   num.bins=base::nrow(hist.df) #number of bins
   hist.df$san.prop=hist.df$Freq/nobs
@@ -47,11 +48,14 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0){
     threshold=0
   }
   if(sum(hist.df$san.prop>threshold)==0){
-    warning("After noise added, there are no sanitized proportions above the threshold. Sanitized proportions shifted to all be non-negative.")
+    warn.message=paste(warn.message,"After noise added, there are no sanitized proportions above the threshold. Sanitized proportions shifted to all be non-negative.")
     min.san.prop=min(hist.df$san.prop)
     hist.df$san.prop=hist.df$san.prop+abs(min.san.prop)
   }else{
     hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
+  }
+  if(is.null(warn.message)==FALSE){
+    warning(warn.message)
   }
   hist.df$san.prop=hist.df$san.prop/(sum(hist.df$san.prop)) #normalize
   return(hist.df)
