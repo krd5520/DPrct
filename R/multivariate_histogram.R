@@ -72,9 +72,11 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       num.continuous=ncol(cont.data)
     }
     }
+    if(num.continuous>0){
     which.cont=base::colnames(data)%in%base::colnames(cont.data) #logical if continuous variable
     data[,which.cont]=base::sapply(base::seq(1,ncol(cont.data)),
                                    function(i)continuous_bins(cont.data[,i],num.bin[i]))
+    }
   }# end if there are continuous variables
   mv.histogram=dplyr::count(data,data[seq(1,nrow(data)),],name="Freq")
 
