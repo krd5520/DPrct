@@ -22,7 +22,7 @@
 #'@export
 multivariate_histogram<-function(data,continuous.vars=NULL,
                                  num.bin=NULL,bin.param=NA,
-                                 which.cont.out=FALSE,return.time=TRUE){
+                                 which.cont.out=FALSE,return.time=TRUE,check.cont=F){
   ### Check Inputs ###
   stopifnot(base::is.data.frame(data)) #check data input
 
@@ -65,10 +65,12 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       stopifnot(bin.param>0&bin.param<1)
       num.bin=base::rep(base::ceiling((base::nrow(cont.data)^bin.param)),num.continuous)
     }
+    if(check.cont=T){
     cont.gr.bin=sapply(seq(1,num.continuous),function(i)length(unique(cont.data[,i]))>num.bin[i])
     if(sum(!cont.gr.bin)>0){
       cont.data=cont.data[,cont.gr.bin,drop=F]
       num.continuous=ncol(cont.data)
+    }
     }
     which.cont=base::colnames(data)%in%base::colnames(cont.data) #logical if continuous variable
     data[,which.cont]=base::sapply(base::seq(1,ncol(cont.data)),

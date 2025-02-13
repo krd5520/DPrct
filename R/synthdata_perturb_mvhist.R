@@ -92,7 +92,7 @@ synthdata_perturb_mvhist<-function(data,
   #get multivariate histogram for mixed data types.
   mv.hist.out=multivariate_histogram(data=data,continuous.vars = continuous.vars,
                                      num.bin = num.bin,bin.param=bin.param,
-                                     which.cont.out=TRUE)
+                                     which.cont.out=TRUE,check.cont=T)
   if(is.list(mv.hist.out)==TRUE){
     freq.df<-mv.hist.out[[1]]
     which.cont=mv.hist.out[[2]]
