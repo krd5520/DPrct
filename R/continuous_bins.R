@@ -39,8 +39,8 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL){
       bin.labs<-0.5*(boundaries[base::seq(2,num.bins+1)]+boundaries[base::seq(1,num.bins)])
     }
     out.col=rep(NA,length(cont.col))
-    out.col[!na.idx]=bin.labs[cat.col]
+    out.col[!na.idx]=as.numeric(bin.labs[cat.col])
   }
 
-  return(as.numeric(out.col))
+  return(out.col)
 }
