@@ -125,7 +125,7 @@ dp_iter_hybrid=function(conf.model,
                           epsilon=mse.epsilon,delta=mse.delta,
                           bounds.sd = mse.bd.sd))^2
   }else{
-    se=unlist(lapply(1:num.iters,function(idx)base::sqrt(stats:var(iter.out[[idx]]$residuals))/length(iter.out[[idx]]$residuals)))
+    se=unlist(lapply(1:num.iters,function(idx)base::sqrt(stats::var(iter.out[[idx]]$residuals))/length(iter.out[[idx]]$residuals)))
     ci.out=dp_confidence_interval(se,epsilon.vec=mse.epsilon,delta.vec=mse.delta,alphas=0.05,san.point=NA,
                                     bounds.sd=mse.bd.sd,x.sd=NA,bound.mean=mse.bd.mean,
                                     return.point.sd=TRUE)
