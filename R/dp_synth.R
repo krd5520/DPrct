@@ -53,6 +53,7 @@ dp_synthdata=function(formula,
                       return.treatment.pvalue=TRUE,
                       return.treatment.CI=TRUE,
                       treat.ppart.list=NULL,
+                      se.normal=F,
                       ...){
   start.time=proc.time()
   time.values=NULL
@@ -152,6 +153,11 @@ dp_synthdata=function(formula,
     tempout=get_sanmse_params(bd.sd.list)
     mse.bd.sd=tempout[[1]]
     bd.sd.list=tempout[[2]]
+    if(se.normal==TRUE){
+    tempout=get_sanmse_params(bd.mean.list)
+    mse.bd.mean=tempout[[1]]
+    bd.mean.list=tempout[[2]]
+    }
 
     #warning("before dp_iter_hybrid")
     list2env(dp_iter_hybrid(conf.model=conf.model,
@@ -162,7 +168,9 @@ dp_synthdata=function(formula,
                             response.var=response.var,
                             mse.epsilon=mse.epsilon,
                             mse.delta=mse.delta,
-                            mse.bd.sd=mse.bd.sd),envir=globalenv())
+                            mse.bd.sd=mse.bd.sd,
+                            mse.bd.mean=mse.bd.mean,
+                            treat.se.normal=se.normal),envir=globalenv())
 
 
     # warning(paste("cov.mat colnames",paste0(colnames(cov.mat),collapse=", "),

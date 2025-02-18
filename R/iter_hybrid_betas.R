@@ -68,7 +68,8 @@ dp_iter_hybrid=function(conf.model,
                         response.var,
                         mse.epsilon,
                         mse.delta,
-                        mse.bd.sd){
+                        mse.bd.sd,
+                        mse.bd.mean=100){
   yb=simulate_response_glm(conf.model,newdata=synth.data[,model.vars[-1]],nsim=num.iters)
 
   predictor.formula=stats::as.formula(
@@ -90,7 +91,8 @@ dp_iter_hybrid=function(conf.model,
                                    synth.predictors=synth.data[,model.vars[-1]],
                                    conf.mod=conf.model,
                                    y.var=response.var,
-                                   return.invxtx=FALSE){
+                                   return.invxtx=FALSE,
+                                   treat.se.normal=FALSE){
 
     #bind response to predictors
     iter.data=cbind(synth.predictors,coly)
@@ -114,6 +116,7 @@ dp_iter_hybrid=function(conf.model,
   #column for each coefficient (including intercept), row for each iteration
   betas=t(sapply(1:num.iters,function(idx)iter.out[[idx]]$betas))
 
+  if(treat.se.normal==FALSE){
   #stack residuals into a vector
   residuals=unlist(lapply(1:num.iters,function(idx)iter.out[[idx]]$residuals))
 
@@ -121,6 +124,13 @@ dp_iter_hybrid=function(conf.model,
   san.mse=(dp_estimate_sd(residuals,
                           epsilon=mse.epsilon,delta=mse.delta,
                           bounds.sd = mse.bd.sd))^2
+  }else{
+    se=unlist(lapply(1:num.iters,function(idx)base::sqrt(stats:var(iter.out[[idx]]$residuals))/length(iter.out[[idx]]$residuals)))
+    ci.out=dp_confidence_interval(se,epsilon.vec=mse.epsilon,delta.vec=mse.delta,alphas=0.05,san.point=NA,
+                                    bounds.sd=mse.bd.sd,x.sd=NA,bound.mean=mse.bd.mean,
+                                    return.point.sd=TRUE)
+    san.mse=ci.out[[2]]
+  }
   nr=nrow(confidential.data) #number of observations
 
   if(sum(colSums(modMat==0)==nr)>0){
