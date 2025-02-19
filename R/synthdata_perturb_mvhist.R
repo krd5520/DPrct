@@ -199,7 +199,7 @@ synthdata_perturb_mvhist<-function(data,
                                 function(col)as.factor(as.character(col)))
   if(add.cont.variation==TRUE){# if adding uniform variation for continuous values
     cont.v=colnames(synth.data[,which.cont,drop=F])
-    warning(paste("continuous variables are:", paste(cont.v,collapse=","),
+    stop(paste("continuous variables are:", paste(cont.v,collapse=","),
                   "and ",paste(lapply(synth.data[,which.cont],length),collapse=", ")))
     count.nas=sapply(cont.v,function(x)sum(is.na(synth.data[,cont.v])))
     count.vals=sapply(cont.v,function(x)length(unique(as.character(synth.data[,cont.v])))<=1)
