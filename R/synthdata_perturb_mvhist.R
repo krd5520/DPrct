@@ -89,6 +89,7 @@ synthdata_perturb_mvhist<-function(data,
   ### Check Inputs ###
   stopifnot(is.numeric(epsilon)&&epsilon>0)
 
+  which.cat=sapply(seq(1,ncol(data)),function(x)is.factor(data[,x])|is.character(data[,x]))
   #get multivariate histogram for mixed data types.
   mv.hist.out=multivariate_histogram(data=data,continuous.vars = continuous.vars,
                                      num.bin = num.bin,bin.param=bin.param,
@@ -193,12 +194,19 @@ synthdata_perturb_mvhist<-function(data,
   # (remove frequency, san.prop columns)
   synth.data<-freq.df[row.sample,colnames(freq.df)%in%colnames(data)]
 
+  #force columns to be factors or numeric (add variation if needed)
+  synth.data[,which.cat]=sapply(synth.data[,which.cat],
+                                function(col)as.factor(as.character(col)))
   if(add.cont.variation==TRUE){# if adding uniform variation for continuous values
     synth.data[,which.cont]=sapply(synth.data[,which.cont],synth_continuous_variation)
   }else{
       synth.data[,which.cont]=sapply(synth.data[,which.cont],
                                            function(col)as.numeric(as.character(col)))
   }
+  synth.data[,!which.cat]=sapply(synth.data[,!which.cat],
+                                function(col)as.numeric(as.character(col)))
+
+
 
   samp.hist.stop=proc.time()
   samp.hist.time=(samp.hist.stop-san.hist.stop)[[3]]
