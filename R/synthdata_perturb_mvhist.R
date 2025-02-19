@@ -336,6 +336,9 @@ synth_continuous_variation<-function(cat.var){
   #half the interval length is 1/2 difference between midpoints
   half.widths=abs(midpoints[2:n.levels]-midpoints[1:n.levels-1])/2
 
+  if(sum(!is.na(half.widths))==0){
+    stop(paste("all half widths are NA. cat.var head is:",paste(head(cat.var),sep=", ")))
+  }
   if((sum(half.widths,na.rm=T)/sum(!is.na(half.widths)))==half.widths[1]){ #if all widths are equal
     variation<-stats::runif(n.rw,-half.widths[1],half.widths[1]) #uniform rv
     cont.var=as.numeric(as.character(cat.var))+variation
