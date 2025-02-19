@@ -201,7 +201,6 @@ synthdata_perturb_mvhist<-function(data,
     cont.v=colnames(synth.data[,which.cont,drop=F])
     warning(paste("continuous variables are:", paste(cont.v,collapse=","),
                   "and ",paste(lapply(synth.data[,which.cont],length),collapse=", ")))
-)))
     count.nas=sapply(cont.v,function(x)sum(is.na(synth.data[,cont.v])))
     count.vals=sapply(cont.v,function(x)length(unique(as.character(synth.data[,cont.v])))<=1)
     if(sum(count.nas,na.rm=T)>0){
