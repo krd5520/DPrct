@@ -315,7 +315,7 @@ synthdata_perturb_mvhist<-function(data,
 #' @importFrom stats runif
 synth_continuous_variation<-function(cat.var){
   n.rw=length(cat.var)
-  midpoints<-as.numeric(levels(as.factor(cat.var))) #get midpoint values
+  midpoints<-base::sort(as.numeric(as.character(levels(as.factor(cat.var))))) #get midpoint values
   n.levels=length(midpoints)
   #half the interval length is 1/2 difference between midpoints
   half.widths=abs(midpoints[2:n.levels]-midpoints[2:n.levels-1])/2
