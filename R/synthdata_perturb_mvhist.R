@@ -200,8 +200,13 @@ synthdata_perturb_mvhist<-function(data,
   if(add.cont.variation==TRUE){# if adding uniform variation for continuous values
     cont.v=colnames(synth.data[,which.cont,drop=F])
     count.nas=sapply(cont.v,function(x)sum(is.na(synth.data[,cont.v])))
-    if(sum(count.nas)>0){
+    count.vals=sapply(cont.v,function(x)length(unique(as.character(synth.data[,cont.v])))<=1)
+    if(sum(count.nas,na.rm=T)>0){
       warning(paste(cont.v[count.nas>0],"has",count.nas," NA values",collapse="\n"))
+    }
+    if((sum(count.vals,na.rm=T)>0)|(sum(is.na(count.vals))>0)){
+      warning(paste("some continuous variable only has one value?:",paste0(cont.v[count.vals],collapse=", "),
+                    " or something weird with NAs ",sum(is.na(count.vals))))
     }
     synth.data[,which.cont]=lapply(synth.data[,which.cont],synth_continuous_variation)
   }else{
@@ -337,7 +342,8 @@ synth_continuous_variation<-function(cat.var){
   half.widths=abs(midpoints[2:n.levels]-midpoints[1:n.levels-1])/2
 
   if(sum(!is.na(half.widths))==0){
-    stop(paste("all half widths are NA. cat.var head is:",paste(head(cat.var),sep=", ")))
+    stop(paste("all half widths are NA. cat.var head is:",paste(head(cat.var),sep=", "),
+               "dim is:",paste(try(dim(cat.var)),collapse=", ")))
   }
   if((sum(half.widths,na.rm=T)/sum(!is.na(half.widths)))==half.widths[1]){ #if all widths are equal
     variation<-stats::runif(n.rw,-half.widths[1],half.widths[1]) #uniform rv
