@@ -199,6 +199,10 @@ synthdata_perturb_mvhist<-function(data,
                                 function(col)as.factor(as.character(col)))
   if(add.cont.variation==TRUE){# if adding uniform variation for continuous values
     synth.data[,which.cont]=lapply(synth.data[,which.cont],synth_continuous_variation)
+    count.nas=sapply(synth.data[,which.cont],function(x)sum(is.na(x)))
+    if(sum(count.nas)>0){
+      warning(paste(which.cont[count.nas>0],"has",count.nas," NA values",collapse="\n"))
+    }
   }else{
       synth.data[,which.cont]=lapply(synth.data[,which.cont],
                                            function(col)as.numeric(as.character(col)))
@@ -323,10 +327,13 @@ synthdata_perturb_mvhist<-function(data,
 #' @importFrom stats runif
 synth_continuous_variation<-function(cat.var){
   n.rw=length(cat.var)
-  midpoints<-base::sort(as.numeric(as.character(levels(as.factor(cat.var))))) #get midpoint values
+  midpoints<-base::sort(as.numeric(as.character(cat.var))) #get midpoint values
+  if(sum(is.na(midpoints))>0){
+    warning(paste("There are NA values in midpoints:",sum(is.na(midpoints)),"NA values"))
+  }
   n.levels=length(midpoints)
   #half the interval length is 1/2 difference between midpoints
-  half.widths=abs(midpoints[2:n.levels]-midpoints[2:n.levels-1])/2
+  half.widths=abs(midpoints[2:n.levels]-midpoints[1:n.levels-1])/2
 
   if(sum(half.widths)==half.widths[1]){ #if all widths are equal
     variation<-stats::runif(n.rw,-half.widths[1],half.widths[1]) #uniform rv
