@@ -195,15 +195,15 @@ synthdata_perturb_mvhist<-function(data,
   synth.data<-freq.df[row.sample,colnames(freq.df)%in%colnames(data)]
 
   #force columns to be factors or numeric (add variation if needed)
-  synth.data[,which.cat]=sapply(synth.data[,which.cat],
+  synth.data[,which.cat]=lapply(synth.data[,which.cat],
                                 function(col)as.factor(as.character(col)))
   if(add.cont.variation==TRUE){# if adding uniform variation for continuous values
-    synth.data[,which.cont]=sapply(synth.data[,which.cont],synth_continuous_variation)
+    synth.data[,which.cont]=lapply(synth.data[,which.cont],synth_continuous_variation)
   }else{
-      synth.data[,which.cont]=sapply(synth.data[,which.cont],
+      synth.data[,which.cont]=lapply(synth.data[,which.cont],
                                            function(col)as.numeric(as.character(col)))
   }
-  synth.data[,!which.cat]=sapply(synth.data[,!which.cat],
+  synth.data[,!which.cat]=lapply(synth.data[,!which.cat],
                                 function(col)as.numeric(as.character(col)))
 
 
