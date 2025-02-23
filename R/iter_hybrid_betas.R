@@ -129,7 +129,7 @@ dp_iter_hybrid=function(conf.model,
     ci.out=dp_confidence_interval(se,epsilon.vec=mse.epsilon,delta.vec=mse.delta,alphas=0.05,san.point=NA,
                                     bounds.sd=mse.bd.sd,x.sd=NA,bound.mean=mse.bd.mean,
                                     return.point.sd=TRUE)
-    san.mse=ci.out[[2]]
+    san.mse=abs(ci.out[[2]])
   }
   nr=nrow(confidential.data) #number of observations
 
