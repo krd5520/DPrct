@@ -69,7 +69,8 @@ dp_iter_hybrid=function(conf.model,
                         mse.epsilon,
                         mse.delta,
                         mse.bd.sd,
-                        mse.bd.mean=100,treat.se.normal=F){
+                        mse.bd.mean=100,
+                        treat.se.normal=F){
   yb=simulate_response_glm(conf.model,newdata=synth.data[,model.vars[-1]],nsim=num.iters)
 
   predictor.formula=stats::as.formula(
@@ -91,8 +92,7 @@ dp_iter_hybrid=function(conf.model,
                                    synth.predictors=synth.data[,model.vars[-1]],
                                    conf.mod=conf.model,
                                    y.var=response.var,
-                                   return.invxtx=FALSE,
-                                   se.normal=treat.se.normal){
+                                   return.invxtx=FALSE){
 
     #bind response to predictors
     iter.data=cbind(synth.predictors,coly)
@@ -116,7 +116,7 @@ dp_iter_hybrid=function(conf.model,
   #column for each coefficient (including intercept), row for each iteration
   betas=t(sapply(1:num.iters,function(idx)iter.out[[idx]]$betas))
 
-  if(se.normal==FALSE){
+  if(treat.se.normal==FALSE){
   #stack residuals into a vector
   residuals=unlist(lapply(1:num.iters,function(idx)iter.out[[idx]]$residuals))
 
