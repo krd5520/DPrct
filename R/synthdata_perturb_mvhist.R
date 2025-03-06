@@ -114,9 +114,7 @@ synthdata_perturb_mvhist<-function(data,
 
   san.prop.zero.to.add=NULL
   if(perturb==TRUE){
-    print("in perturb==T")
     possible.combos=prod(sapply(levels.list,length))
-    print("after possible.combos")
     freq.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos)
     if(is.list(freq.df)==TRUE){
       san.prop.zero.to.add=freq.df[[2]]

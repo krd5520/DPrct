@@ -54,7 +54,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     if(is.null(standardize.cont)==FALSE){
       std.not.in.cont=NULL
       if(sum(colnames(cont.data)%in% c(standardize.cont))!=length(standardize.cont)){
-        std.not.in.cont=standardize.cont[!(standardize.cont%iN%colnames(cont.data))]
+        std.not.in.cont=standardize.cont[!(standardize.cont%in%colnames(cont.data))]
         warning(paste("Some columns in standardize.cont are not in continuous.vars and/or the dataset. Combining them:",
                       paste0(std.not.in.cont,collapse=", ")))
         cont.data=rbind(cont.data,data[,std.not.in.cont,drop=F])

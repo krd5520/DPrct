@@ -53,10 +53,8 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     }
     sc.param=2/(nobs*epsilon)
     if(missing.combos<=(2^14)){
-      print("here")
       bins.zero.san.prop= VGAM::rlaplace(missing.combos,0,sc.param)
     }else{
-      prit("else")
       sc.param=2/(nobs*epsilon)
       reps.samp=missing.combos%/%(2^14)
       bins.zero.san.prop=VGAM::rlaplace(missing.combos%%(2^14),0,sc.param)
