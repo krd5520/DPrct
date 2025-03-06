@@ -21,7 +21,7 @@
 #'
 #' @family syntheticData
 #' @importFrom VGAM rlaplace
-#' @export
+#' @noRd
 
 
 dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){

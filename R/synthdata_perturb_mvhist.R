@@ -36,7 +36,7 @@
 #' @param perturb is an indicator as to whether the histogram should be perturbed to
 #'      satisfy DP. Otherwise it will just be a resampled dataset.
 #' @param standardized.cont a vector of column names to transform to a standardized
-#'    form $(x_i-\bar{x})/std.dev.(x)$. If \code{NULL}, then no variable is transformed.
+#'    form (x_i-avg x)/std.dev. of x. If \code{NULL}, then no variable is transformed.
 #' @param std.limits a numeric value for the number of standard deviations away from the mean
 #'    to set the transformed standardized column limits to. Default is 15.
 #' @return a synthetic data.frame for confidential data (inputted as \code{data})
@@ -80,8 +80,6 @@ synthdata_perturb_mvhist<-function(data,
                                    standardize.cont=NULL,
                                    std.limits=15,
                                    continuous.limits=NULL){
-                                   #,...){
-
   start.time=proc.time()
   if(is.na(rseed)==FALSE){
     set.seed(rseed)
@@ -126,6 +124,62 @@ synthdata_perturb_mvhist<-function(data,
 
   san.hist.stop=proc.time()
   san.hist.time=(san.hist.stop-mv.hist.stop)[[3]]
+
+
+  # Sample from unrealized combinations of variable values
+  #
+  #description When sampling from a perturbed histogram, some rows will be sampled that
+  #      did not appear in the original data set. This sampler samples without enumerating
+  #      all possible combinations of column values.
+  #param realized.df dataset of unique rows observed in the original data
+  # levels.list a named list where the name is each column of the original data
+  #    and the values are the possible levels for that column
+  # nsample number of unique unrealized rows to be generated
+  # n.realized default=NA (used for recursion)
+  #param current.iter default=0 (used for recursion)
+  #param orig.nreal default=NA (used for recursion)
+  #param max.iter default=1000, maximum number of iterations to try to sample the unrealized rows
+  #return a data.frame with nsample unique unrealized rows
+  #importFrom dplyr distinct bind_rows
+  #family syntheticData
+  # noRd
+
+  unrealized_sampler=function(realized.df,levels.list,nsample,n.realized=NA,current.iter=0,orig.nreal=NA,max.iter=1000){
+    current.iter=current.iter+1
+    #rownames(realized.df)=NULL
+    if(is.na(n.realized)==TRUE){
+      n.realized=nrow(realized.df)
+    }
+    if(is.data.frame(realized.df)==FALSE){
+      realized.df=as.data.frame(realized.df)
+    }
+    if(is.na(orig.nreal)==TRUE){
+      orig.nreal=n.realized
+    }
+    if(current.iter>max.iter+1){
+      stop(paste("Iterations in unrealized sampler exceed the max iterations: ",max.iter))
+    }
+    if(nrow(realized.df)>=n.realized+nsample){
+      base::message(paste("Iterations to sample unrealized combinations of variables:",current.iter))
+      return(realized.df[-seq(1,orig.nreal),])
+    }else{
+      if(nsample==1){
+        possible=data.frame(matrix(nrow=1,ncol=ncol(realized.df)))
+        colnames(possible)=colnames(realized.df)
+        possible[1,]=unname(sapply(levels.list,function(x)sample(x,nsample,replace=T)))
+      }else{
+        possible=as.data.frame(sapply(levels.list,function(x)sample(x,nsample,replace=T)))
+      }
+      #rownames(possible)=NULL
+      #colnames(possible)=colnames(realized.df)
+      combo=dplyr::distinct(dplyr::bind_rows(realized.df,possible))
+      new.n.realized=nrow(combo)
+      new.nsample=nsample-(new.n.realized-n.realized)
+      return(unrealized_sampler(realized.df = combo,levels.list=levels.list,
+                                nsample=new.nsample,n.realized=new.n.realized,
+                                orig.nreal=orig.nreal,current.iter=current.iter,max.iter=max.iter))
+    }
+  }
 
 
   #if treatment within blocks with set block size, must maintain that block size
@@ -271,6 +325,7 @@ synthdata_perturb_mvhist<-function(data,
 
 #' Internal function: add uniform variation to continuous values within the interval of thier category
 #'
+#' @description Add continuous noise to binned midpoint
 #' @param cont.var is vector of the discretized interval midpoints of a continuous random variable as a factor
 #' @param lvls is vector of all possible midpoints (levels of the factor)
 #' @return a numeric vector of synthetic continuous values
@@ -278,6 +333,7 @@ synthdata_perturb_mvhist<-function(data,
 #' @keywords internal
 #'
 #' @importFrom stats runif
+#'
 synth_continuous_variation<-function(cat.var,lvls){
   n.rw=length(cat.var)
   midpoints=as.numeric(as.character(lvls))
@@ -288,63 +344,3 @@ synth_continuous_variation<-function(cat.var,lvls){
   cont.var=as.numeric(as.character(cat.var))+variation
   return(as.numeric(cont.var))
 }
-
-
-#' Sample from unrealized combinations of variable values
-#'
-#' @description When sampling from a perturbed histogram, some rows will be sampled that
-#'      did not appear in the original data set. This sampler samples without enumerating
-#'      all possible combinations of column values.
-#'
-#' @param realized.df dataset of unique rows observed in the original data
-#' @param levels.list a named list where the name is each column of the original data
-#'    and the values are the possible levels for that column
-#' @param nsample number of unique unrealized rows to be generated
-#' @param n.realized default=NA (used for recursion)
-#' @param current.iter default=0 (used for recursion)
-#' @param orig.nreal default=NA (used for recursion)
-#' @param max.iter default=1000, maximum number of iterations to try to sample the unrealized rows
-#' @return a data.frame with nsample unique unrealized rows
-#' @importFrom dplyr distinct bind_rows
-#'
-#'
-#' @family syntheticData
-#' @export
-#'
-unrealized_sampler=function(realized.df,levels.list,nsample,n.realized=NA,current.iter=0,orig.nreal=NA,max.iter=1000){
-  current.iter=current.iter+1
-  #rownames(realized.df)=NULL
-  if(is.na(n.realized)==TRUE){
-    n.realized=nrow(realized.df)
-  }
-  if(is.data.frame(realized.df)==FALSE){
-    realized.df=as.data.frame(realized.df)
-  }
-  if(is.na(orig.nreal)==TRUE){
-    orig.nreal=n.realized
-  }
-  if(current.iter>max.iter+1){
-    stop(paste("Iterations in unrealized sampler exceed the max iterations: ",max.iter))
-  }
-  if(nrow(realized.df)>=n.realized+nsample){
-    base::message(paste("Iterations to sample unrealized combinations of variables:",current.iter))
-    return(realized.df[-seq(1,orig.nreal),])
-  }else{
-    if(nsample==1){
-      possible=data.frame(matrix(nrow=1,ncol=ncol(realized.df)))
-      colnames(possible)=colnames(realized.df)
-      possible[1,]=unname(sapply(levels.list,function(x)sample(x,nsample,replace=T)))
-    }else{
-      possible=as.data.frame(sapply(levels.list,function(x)sample(x,nsample,replace=T)))
-    }
-    #rownames(possible)=NULL
-    #colnames(possible)=colnames(realized.df)
-    combo=dplyr::distinct(dplyr::bind_rows(realized.df,possible))
-    new.n.realized=nrow(combo)
-    new.nsample=nsample-(new.n.realized-n.realized)
-    return(unrealized_sampler(realized.df = combo,levels.list=levels.list,
-                              nsample=new.nsample,n.realized=new.n.realized,
-                              orig.nreal=orig.nreal,current.iter=current.iter,max.iter=max.iter))
-  }
-}
-

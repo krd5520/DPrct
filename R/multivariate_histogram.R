@@ -82,7 +82,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
         continuous.limits=continuous.limits[colnames(cont.data)]
       }
       num.continous=new.num.continuous
-    }else{
+    }else{ #no standardization
     if((base::length(continuous.limits)<2)&(num.continuous>1)){
       message("Only one continuous limit supplied. It will be used for all the continuous variables.")
       continuous.limits=base::rep(countinous.limits,num.continuous)
@@ -93,7 +93,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     }else{ #otherwise put continuous.limits in the same order as cont.data
       continuous.limits=continuous.limits[colnames(cont.data)]
     }
-  }
+    }
 
   if(num.continuous>0){ #if there are continuous variables
     if(base::sum(base::sapply(cont.data,base::is.numeric))!=num.continuous){ #check columns are numeric
@@ -121,7 +121,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     #  cont.data=cont.data[,cont.gr.bin,drop=F]
     #  num.continuous=ncol(cont.data)
     #}
-    #}
+    }
     if(num.continuous>0){
     which.cont=base::colnames(data)%in%base::colnames(cont.data) #logical if continuous variable
     data[,which.cont]=

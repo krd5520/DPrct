@@ -1,3 +1,5 @@
+
+
 #' Assign Treatments Using randomizr Package Functions
 #' @importFrom randomizr simple_ra
 #' @importFrom randomizr complete_ra
@@ -38,11 +40,6 @@
 #'
 #' @returns a data.frame that adds a treatment column to synth.data.
 #'
-#' @examples
-#' set.seed(1)
-#' data=data.frame("block.cov"=rep(c("A","A","B","B","B","C","C"),20),
-#'                 "covariate"=rnorm(140,48,3))
-#' treatment_assign(data,assign.type="block",num.arms=3,blocks="block.cov")
 #'
 #' @family syntheticData
 #' @export
@@ -52,6 +49,12 @@ treatment_assign<-function(synth.data,
                            num.arms=NULL,
                            treatment.colname="treatment",
                            blocks=NULL,clusters=NULL,conditions=NULL){
+
+  # @examples
+  # set.seed(1)
+  # data=data.frame("block.cov"=rep(c("A","A","B","B","B","C","C"),20),
+  #                 "covariate"=rnorm(140,48,3))
+  # treatment_assign(data,assign.type="block",num.arms=3,blocks="block.cov")
   stopifnot(assign.type %in% c("simple","complete","block","cluster","block_and_cluster"))
 
   if(base::is.data.frame(synth.data)==TRUE){
@@ -105,5 +108,7 @@ treatment_assign<-function(synth.data,
   #rename the column
   base::colnames(synth.data)=c(base::colnames(synth.data)[base::seq(1,base::ncol(synth.data)-1)],
                                treatment.colname)
+
   return(synth.data)
+
 }
