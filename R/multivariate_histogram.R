@@ -71,17 +71,17 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       }else if(ncontlim==num.continuous){
         continuous.limits=c(countinous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.continuous))
       }else if(ncontlim==new.num.continuous){
-        message("countinus.limits provides a bound for each continous column. std.limits input is ignored.")
+        message("countinus.limits provides a bound for each continuous column. std.limits input is ignored.")
       }else{
-        stop("Continous.limits length with continous.vars and standardize.cont inputs do not lead to a clear continous.limits value for each continous variable.")
+        stop("continuous.limits length with continuous.vars and standardize.cont inputs do not lead to a clear continuous.limits value for each continuous variable.")
       }
       if(is.null(names(continuous.limits))==TRUE){ #if no names, name them after the continuous columns
         names(continuous.limits)=colnames(cont.data)
       }else{ #otherwise put continuous.limits in the same order as cont.data
-        names(continuous.limits)[names(continuous.limits)==""]=standardize.cont[!(standardize.cont%in%names(continous.limits))]
+        names(continuous.limits)[names(continuous.limits)==""]=standardize.cont[!(standardize.cont%in%names(continuous.limits))]
         continuous.limits=continuous.limits[colnames(cont.data)]
       }
-      num.continous=new.num.continuous
+      num.continuous=new.num.continuous
     }else{ #no standardization
     if((base::length(continuous.limits)<2)&(num.continuous>1)){
       message("Only one continuous limit supplied. It will be used for all the continuous variables.")
