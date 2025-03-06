@@ -63,7 +63,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       std.idx=standardize.cont%in% colnames(cont.data)
       cont.data[,standardize.cont[std.idx]]=
         lapply(cont.data[,standardize.cont[std.idx]],
-               function(x),(x-mean(x,na.rm=T))/sqrt(var(x,na.rm=T)))
+               function(x)(x-mean(x,na.rm=T))/sqrt(var(x,na.rm=T)))
       ncontlim=base::length(continuous.limits)
       if((ncontlim<2)&(num.continuous>1)){
         message("Only one continuous limit supplied. It will be used for all the continuous variables. That are not standardized.")
