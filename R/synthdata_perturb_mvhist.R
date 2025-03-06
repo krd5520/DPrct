@@ -230,8 +230,7 @@ synthdata_perturb_mvhist<-function(data,
         synth.data=treatment_assign(synth.data=synth.data,
                                     assign.type=assign.type,
                                     treatment.colname=conditions[i],
-                                    blocks=unlist(blocks.ls[[i]]))
-        #,conditions=c("1","0"))#,#clusters=clusters, ...)
+                                    blocks=unlist(blocks.ls[[i]]),conditions=c("1","0"))#,#clusters=clusters, ...)
         # warning(paste("done with treatment_assign.",
         # "dim of treatment is",paste0(dim(synth.data[,ncol(synth.data),drop=F]),collapse=", "),
         # "synthhead of treat col",paste0(head(c(synth.data[,ncol(synth.data),drop=T])),collapse=", ")))

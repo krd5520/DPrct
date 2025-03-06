@@ -51,7 +51,7 @@ treatment_assign<-function(synth.data,
                            assign.type,
                            num.arms=NULL,
                            treatment.colname="treatment",
-                           blocks=NULL,clusters=NULL,...){
+                           blocks=NULL,clusters=NULL,conditions=NULL){
   stopifnot(assign.type %in% c("simple","complete","block","cluster","block_and_cluster"))
 
   if(base::is.data.frame(synth.data)==TRUE){
@@ -87,15 +87,15 @@ treatment_assign<-function(synth.data,
 
   # assign treatments using randomizr functions depending on assign.type
   if(assign.type=="simple"){ #simple assignment
-    synth.data$treat=randomizr::simple_ra(N=num.rows,num_arms=num.arms,...)
+    synth.data$treat=randomizr::simple_ra(N=num.rows,num_arms=num.arms,conditions=conditions)
   } else if(assign.type=="complete"){ #complete assignment
-    synth.data$treat=randomizr::complete_ra(N=num.rows,num_arms=num.arms,...)
+    synth.data$treat=randomizr::complete_ra(N=num.rows,num_arms=num.arms,conditions=conditions)
   }else if(assign.type=="block"){ #block assignment
-    synth.data$treat=randomizr::block_ra(blocks=block.combine,num_arms=num.arms,...)
+    synth.data$treat=randomizr::block_ra(blocks=block.combine,num_arms=num.arms,conditions=conditions)
   }else if(assign.type=="cluster"){ #cluster assignment
-    synth.data$treat=randomizr::cluster_ra(clusters=cluster.combine,num_arms=num.arms,...)
+    synth.data$treat=randomizr::cluster_ra(clusters=cluster.combine,num_arms=num.arms,conditions=conditions)
   }else if(assign.type=="block_and_cluster"){ #block and cluster assignment
-    synth.data$treat=randomizr::block_and_cluster_ra(blocks=block.combine,clusters=cluster.combine,num_arms=num.arms,...)
+    synth.data$treat=randomizr::block_and_cluster_ra(blocks=block.combine,clusters=cluster.combine,num_arms=num.arms,conditions=conditions)
   }else{ #OH NO!
     stop(base::paste('ERROR: Something is wrong with assign.type.',
                      'It should be "simple","complete","block","cluster", or "block_and_cluster".'))
