@@ -94,14 +94,13 @@ synthdata_perturb_mvhist<-function(data,
 
   which.cat=sapply(seq(1,ncol(data)),function(x)is.factor(data[,x])|is.character(data[,x]))
   #get multivariate histogram for mixed data types.
-  print("before mv.hist.out on line 97")
-  print(continuous.limits)
+  #print("before mv.hist.out on line 97")
+  #print(continuous.limits)
   mv.hist.out=multivariate_histogram(data=data,continuous.vars = continuous.vars,
                                      continuous.limits=continuous.limits,
                                      num.bin = num.bin,bin.param=bin.param,
                                      which.cont.out=TRUE,levels.out=T,
                                      std.limits=std.limits,standardize.cont=standardize.cont)
-  print("after mv.hist")
   #if(is.list(mv.hist.out)==TRUE){
   freq.df<-mv.hist.out[["mv.histogram"]]
   which.cont=mv.hist.out[["which.cont"]]
@@ -115,7 +114,9 @@ synthdata_perturb_mvhist<-function(data,
 
   san.prop.zero.to.add=NULL
   if(perturb==TRUE){
+    print("in perturb==T")
     possible.combos=prod(sapply(levels.list,length))
+    print("after possible.combos")
     freq.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos)
     if(is.list(freq.df)==TRUE){
       san.prop.zero.to.add=freq.df[[2]]

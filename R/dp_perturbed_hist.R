@@ -46,11 +46,25 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     sanprop.zero.to.add=0
   }else{
     missing.combos=possible.combos-nrow(hist.df)
-    bins.zero.san.prop= VGAM::rlaplace(missing.combos,0,2/(nobs*epsilon))
     if((delta>0)&(possible.combos>(2/delta))){ #use Bun et al. 2016
       threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
     }else{ #pure-DP and low number of bins don't use a threshold
       threshold=0
+    }
+    sc.param=2/(nobs*epsilon)
+    if(missing.combos<=(2^14)){
+      print("here")
+      bins.zero.san.prop= VGAM::rlaplace(missing.combos,0,sc.param)
+    }else{
+      prit("else")
+      sc.param=2/(nobs*epsilon)
+      reps.samp=missing.combos%/%(2^14)
+      bins.zero.san.prop=VGAM::rlaplace(missing.combos%%(2^14),0,sc.param)
+      bins.zero.san.prop[bins.zero.san.prop>threshold]
+      for(i in seq(1,reps.samp)){
+        temp.san.prop=VGAM::rlaplace(2^14,0,sc.param)
+        bins.zero.san.prop=c(bins.zero.san.prop,temp.san.prop[temp.san.prop>threshold])
+      }
     }
     sanprop.zero.to.add=bins.zero.san.prop[bins.zero.san.prop>threshold]
     message(paste("There are",length(sanprop.zero.to.add)," zero bins to add."))
