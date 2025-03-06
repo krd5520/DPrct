@@ -35,6 +35,10 @@
 #'    If there are continuous variables, then a limit must be supplied for each.
 #' @param perturb is an indicator as to whether the histogram should be perturbed to
 #'      satisfy DP. Otherwise it will just be a resampled dataset.
+#' @param standardized.cont a vector of column names to transform to a standardized
+#'    form $(x_i-\bar{x})/std.dev.(x)$. If \code{NULL}, then no variable is transformed.
+#' @param std.limits a numeric value for the number of standard deviations away from the mean
+#'    to set the transformed standardized column limits to. Default is 15.
 #' @return a synthetic data.frame for confidential data (inputted as \code{data})
 #'    that satisfies (\code{epsilon},\code{delta})-DP using the perturbed
 #'    multivariate histogram method.
@@ -76,6 +80,8 @@ synthdata_perturb_mvhist<-function(data,
                                    factorial=FALSE,
                                    conditions=NULL,
                                    perturb=T,
+                                   standardize.cont=NULL,
+                                   std.limits=15,
                                    ...){
 
   start.time=proc.time()
@@ -95,7 +101,7 @@ synthdata_perturb_mvhist<-function(data,
   mv.hist.out=multivariate_histogram(data=data,continuous.vars = continuous.vars,
                                      continuous.limits=continuous.limits,
                                      num.bin = num.bin,bin.param=bin.param,
-                                     which.cont.out=TRUE,levels.out=T)
+                                     which.cont.out=TRUE,levels.out=T,std.limits=std.limits,standardize.cont=standardize.cont)
   #if(is.list(mv.hist.out)==TRUE){
   freq.df<-mv.hist.out[["mv.histogram"]]
   which.cont=mv.hist.out[["which.cont"]]

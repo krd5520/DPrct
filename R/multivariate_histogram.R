@@ -9,6 +9,10 @@
 #'    variables to be used if num.bins==NA.
 #' @param continuous.limits a list of upper and lower bounds for each continuous variable.
 #'    If there are continuous variables, then a limit must be supplied for each.
+#' @param standardized.cont a vector of column names to transform to a standardized
+#'    form $(x_i-\bar{x})/std.dev.(x)$. If \code{NULL}, then no variable is transformed.
+#' @param std.limits a numeric value for the number of standard deviations away from the mean
+#'    to set the transformed standardized column limits to. Default is 15.
 #' @param which.cont.out a logical if TRUE, return which.count and histogram data.frame.
 #'    Default FALSE only returns histogram data.frame
 #' @param return.time a logical to indicate if the computation times should be
@@ -25,7 +29,7 @@
 multivariate_histogram<-function(data,continuous.vars=NULL,
                                  num.bin=NULL,bin.param=NA,continuous.limits=NULL,
                                  which.cont.out=FALSE,levels.out=FALSE,
-                                 return.time=TRUE){#,check.cont=F){
+                                 return.time=TRUE,std.limits=15,standardize.cont=NULL){#,check.cont=F){
   ### Check Inputs ###
   stopifnot(base::is.data.frame(data)) #check data input
 
@@ -47,6 +51,38 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
 
     #number of continuous variables
     num.continuous=base::ncol(cont.data)
+    if(is.null(standardize.cont)==FALSE){
+      std.not.in.cont=NULL
+      if(sum(colnames(cont.data)%in% c(standardize.cont))!=length(standardize.cont)){
+        std.not.in.cont=standardize.cont[!(standardize.cont%iN%colnames(cont.data))]
+        warning(paste("Some columns in standardize.cont are not in continuous.vars and/or the dataset. Combining them:",
+                      paste0(std.not.in.cont,collapse=", ")))
+        cont.data=rbind(cont.data,data[,std.not.in.cont,drop=F])
+      }
+      new.num.continuous=ncol(cont.data)
+      std.idx=standardize.cont%in% colnames(cont.data)
+      cont.data[,standardize.cont[std.idx]]=
+        lapply(cont.data[,standardize.cont[std.idx]],
+               function(x),(x-mean(x,na.rm=T))/sqrt(var(x,na.rm=T)))
+      ncontlim=base::length(continuous.limits)
+      if((ncontlim<2)&(num.continuous>1)){
+        message("Only one continuous limit supplied. It will be used for all the continuous variables. That are not standardized.")
+        continuous.limits=c(base::rep(countinous.limits,num.continuous),rep(list(-std.limits,std.limits),sum(std.idx)))
+      }else if(ncontlim==num.continuous){
+        continuous.limits=c(countinous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.continuous))
+      }else if(ncontlim==new.num.continuous){
+        message("countinus.limits provides a bound for each continous column. std.limits input is ignored.")
+      }else{
+        stop("Continous.limits length with continous.vars and standardize.cont inputs do not lead to a clear continous.limits value for each continous variable.")
+      }
+      if(is.null(names(continuous.limits))==TRUE){ #if no names, name them after the continuous columns
+        names(continuous.limits)=colnames(cont.data)
+      }else{ #otherwise put continuous.limits in the same order as cont.data
+        names(continuous.limits)[names(continuous.limits)==""]=standardize.cont[!(standardize.cont%in%names(continous.limits))]
+        continuous.limits=continuous.limits[colnames(cont.data)]
+      }
+      num.continous=new.num.continuous
+    }else{
     if((base::length(continuous.limits)<2)&(num.continuous>1)){
       message("Only one continuous limit supplied. It will be used for all the continuous variables.")
       continuous.limits=base::rep(countinous.limits,num.continuous)
