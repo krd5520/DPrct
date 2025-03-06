@@ -57,7 +57,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
         std.not.in.cont=standardize.cont[!(standardize.cont%in%colnames(cont.data))]
         warning(paste("Some columns in standardize.cont are not in continuous.vars and/or the dataset. Combining them:",
                       paste0(std.not.in.cont,collapse=", ")))
-        cont.data=rbind(cont.data,data[,std.not.in.cont,drop=F])
+        cont.data=cbind(cont.data,data[,std.not.in.cont,drop=F])
       }
       new.num.continuous=ncol(cont.data)
       std.idx=standardize.cont%in% colnames(cont.data)
