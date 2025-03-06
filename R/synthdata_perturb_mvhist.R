@@ -42,8 +42,6 @@
 #' @return a synthetic data.frame for confidential data (inputted as \code{data})
 #'    that satisfies (\code{epsilon},\code{delta})-DP using the perturbed
 #'    multivariate histogram method.
-#' @param ... additional arguments are such as \code{blocks} or \code{clusters}
-#'    are supplied to the \code{treatment_assign} function.
 #' @importFrom stats setNames
 #'
 #'
@@ -81,8 +79,8 @@ synthdata_perturb_mvhist<-function(data,
                                    perturb=T,
                                    standardize.cont=NULL,
                                    std.limits=15,
-                                   continuous.limits=NULL,
-                                   ...){
+                                   continuous.limits=NULL){
+                                   #,...){
 
   start.time=proc.time()
   if(is.na(rseed)==FALSE){
