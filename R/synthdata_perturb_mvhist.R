@@ -66,7 +66,6 @@ synthdata_perturb_mvhist<-function(data,
                                    continuous.vars=NULL,
                                    num.bin=NULL,
                                    bin.param=NA,
-                                   continuous.limits=NULL,
                                    add.cont.variation=FALSE,
                                     treatment.colname="treatment",
                                    with.treatment=TRUE,
@@ -82,6 +81,7 @@ synthdata_perturb_mvhist<-function(data,
                                    perturb=T,
                                    standardize.cont=NULL,
                                    std.limits=15,
+                                   continuous.limits=NULL,
                                    ...){
 
   start.time=proc.time()
@@ -251,7 +251,7 @@ synthdata_perturb_mvhist<-function(data,
       synth.data=treatment_assign(synth.data=synth.data,
                                   assign.type=assign.type,
                                   treatment.colname=treatment.colname,
-                                  blocks=blocks,conditions=conditions,clusters=clusters,...)
+                                  blocks=blocks,conditions=conditions)#,clusters=clusters,...)
       #### NOTE: double check this handles multiple treatment variables as well?
     }
     #warning("end within.treatment==TRUE")
