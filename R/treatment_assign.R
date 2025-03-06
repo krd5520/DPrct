@@ -46,6 +46,7 @@
 #'
 #' @family syntheticData
 #' @export
+#'
 treatment_assign<-function(synth.data,
                            assign.type,
                            num.arms=NULL,
