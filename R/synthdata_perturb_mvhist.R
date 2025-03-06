@@ -228,10 +228,12 @@ synthdata_perturb_mvhist<-function(data,
         #warning(paste("inside for loop i=",i))
         #        if((length(treatment.colname)==length(conditions))&(length(treatment.colname)>1)){
         #          warning("treatment.colname has same length as conditions")
+
         synth.data=treatment_assign(synth.data=synth.data,
                                     assign.type=assign.type,
                                     treatment.colname=conditions[i],
-                                    blocks=unlist(blocks.ls[[i]]))#,conditions=c("1","0"))#,#clusters=clusters, ...)
+                                    blocks=unlist(blocks.ls[[i]]))
+        #,conditions=c("1","0"))#,#clusters=clusters, ...)
         # warning(paste("done with treatment_assign.",
         # "dim of treatment is",paste0(dim(synth.data[,ncol(synth.data),drop=F]),collapse=", "),
         # "synthhead of treat col",paste0(head(c(synth.data[,ncol(synth.data),drop=T])),collapse=", ")))
@@ -249,8 +251,7 @@ synthdata_perturb_mvhist<-function(data,
       synth.data=treatment_assign(synth.data=synth.data,
                                   assign.type=assign.type,
                                   treatment.colname=treatment.colname,
-                                  blocks=blocks,conditions=conditions,#clusters=clusters,
-                                  ...)
+                                  blocks=blocks,conditions=conditions,clusters=clusters,...)
       #### NOTE: double check this handles multiple treatment variables as well?
     }
     #warning("end within.treatment==TRUE")
