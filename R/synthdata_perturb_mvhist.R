@@ -97,7 +97,8 @@ synthdata_perturb_mvhist<-function(data,
   mv.hist.out=multivariate_histogram(data=data,continuous.vars = continuous.vars,
                                      continuous.limits=continuous.limits,
                                      num.bin = num.bin,bin.param=bin.param,
-                                     which.cont.out=TRUE,levels.out=T,std.limits=std.limits,standardize.cont=standardize.cont)
+                                     which.cont.out=TRUE,levels.out=T,
+                                     std.limits=std.limits,standardize.cont=standardize.cont)
   #if(is.list(mv.hist.out)==TRUE){
   freq.df<-mv.hist.out[["mv.histogram"]]
   which.cont=mv.hist.out[["which.cont"]]
