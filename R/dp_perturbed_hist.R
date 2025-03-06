@@ -24,39 +24,62 @@
 #' @export
 
 
-dp_perturbed_hist<-function(hist.df,epsilon,delta=0){
+dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
 
-  warn.message=NULL
+ # warn.message=NULL
   hist.df=hist.df[hist.df$Freq>0,,drop=F] #remove bins with 0 counts
   nobs=base::sum(hist.df$Freq,na.rm=T) #number of observations
   if(nobs<10){
-    warn.message=paste(warn.message,paste("The number of histogram observations is less then 10:",nobs,"\n"))
+    message(paste("The number of histogram observations is less then 10:",nobs,"\n"))
+  }
+  #if using delta>0, and number of bins is high enough
+
+
+  if(is.null(possible.combos)==TRUE){
+    message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
+    #if(possible.combos==base::nrow(hist.df)){
+    if((delta>0)&(base::nrow(hist.df)>(2/delta))){ #use Bun et al. 2016
+      threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
+    }else{ #pure-DP and low number of bins don't use a threshold
+      threshold=0
+    }
+    sanprop.zero.to.add=0
+  }else{
+    missing.combos=possible.combos-nrow(hist.df)
+    bins.zero.san.prop= VGAM::rlaplace(missing.combos,0,2/(nobs*epsilon))
+    if((delta>0)&(possible.combos>(2/delta))){ #use Bun et al. 2016
+      threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
+    }else{ #pure-DP and low number of bins don't use a threshold
+      threshold=0
+    }
+    sanprop.zero.to.add=bins.zero.san.prop[bins.zero.san.prop>threshold]
+    message(paste("There are",length(sanprop.zero.to.add)," zero bins to add."))
   }
   num.bins=base::nrow(hist.df) #number of bins
   hist.df$san.prop=hist.df$Freq/nobs
 
   bins.pos=hist.df$san.prop>0
 
+
   #add laplace noise
   hist.df$san.prop[bins.pos]=(hist.df$san.prop[bins.pos]+
                                 VGAM::rlaplace(sum(bins.pos),0,2/(nobs*epsilon)))
+  ### if use discrete laplace  extraDistr::rdlaplace(sum(bins.pos),0,2/(nobs*epsilon)))
 
-  #if using delta>0, and number of bins is high enough
-  if((delta>0)&(num.bins>(2/delta))){ #use Bun et al. 2016
-    threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
-  }else{ #pure-DP and low number of bins don't use a threshold
-    threshold=0
-  }
-  if(sum(hist.df$san.prop>threshold)==0){
-    warn.message=paste(warn.message,"After noise added, there are no sanitized proportions above the threshold. Sanitized proportions shifted to all be non-negative.")
-    min.san.prop=min(hist.df$san.prop)
-    hist.df$san.prop=hist.df$san.prop+abs(min.san.prop)
+  if(sum(hist.df$san.prop>threshold)+sum(sanprop.zero.to.add)==0){
+    stop("After noise added, there are no sanitized proportions above the threshold. This is not good. Try again?")
+    #min.san.prop=min(c(hist.df$san.prop,sanprop.zero.to.add))
+    #hist.df$san.prop=hist.df$san.prop+abs(min.san.prop)
   }else{
     hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
   }
-  if(is.null(warn.message)==FALSE){
-    warning(warn.message)
-  }
+  #if(is.null(warn.message)==FALSE){
+  #  warning(warn.message)
+  #}
   hist.df$san.prop=hist.df$san.prop/(sum(hist.df$san.prop)) #normalize
-  return(hist.df)
+  if(length(sanprop.zero.to.add)>0){
+    return(list(hist.df,sanprop.zero.to.add))
+  }else{
+    return(hist.df)
+  }
 }

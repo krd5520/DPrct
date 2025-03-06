@@ -7,6 +7,8 @@
 #'    for each continuous variable. If =NA use bin.param to determine the number of bins
 #' @param bin.param a numeric value in (0,1) to determine number of bins for continuous
 #'    variables to be used if num.bins==NA.
+#' @param continuous.limits a list of upper and lower bounds for each continuous variable.
+#'    If there are continuous variables, then a limit must be supplied for each.
 #' @param which.cont.out a logical if TRUE, return which.count and histogram data.frame.
 #'    Default FALSE only returns histogram data.frame
 #' @param return.time a logical to indicate if the computation times should be
@@ -21,8 +23,9 @@
 #'@family syntheticData
 #'@export
 multivariate_histogram<-function(data,continuous.vars=NULL,
-                                 num.bin=NULL,bin.param=NA,
-                                 which.cont.out=FALSE,return.time=TRUE,check.cont=F){
+                                 num.bin=NULL,bin.param=NA,continuous.limits=NULL,
+                                 which.cont.out=FALSE,levels.out=FALSE,
+                                 return.time=TRUE){#,check.cont=F){
   ### Check Inputs ###
   stopifnot(base::is.data.frame(data)) #check data input
 
@@ -37,12 +40,23 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
   }else{ #if continuous.vars is supplied
     cont.data=data[,continuous.vars,drop=F] #subset data to be continuous variables
     if(base::ncol(cont.data)==0){
-      warning(paste0("No continuous variables detected. Dimension of cont.data is...",dim(cont.data),"... and length of continuous.vars is...",length(continuous.vars)))
+      num.continuous=0
+      message(paste0("No continuous variables detected. Dimension of cont.data is...",dim(cont.data),"... and length of continuous.vars is...",length(continuous.vars)))
 
     }
 
     #number of continuous variables
-    num.continuous=ncol(cont.data)
+    num.continuous=base::ncol(cont.data)
+    if((base::length(continuous.limits)<2)&(num.continuous>1)){
+      message("Only one continuous limit supplied. It will be used for all the continuous variables.")
+      continuous.limits=base::rep(countinous.limits,num.continuous)
+    }
+    stopifnot(length(continuous.limits)==num.continuous)
+    if(is.null(names(continuous.limits))==TRUE){ #if no names, name them after the continuous columns
+      names(continuous.limits)=colnames(cont.data)
+    }else{ #otherwise put continuous.limits in the same order as cont.data
+      continuous.limits=continuous.limits[colnames(cont.data)]
+    }
   }
 
   if(num.continuous>0){ #if there are continuous variables
@@ -65,28 +79,48 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       stopifnot(bin.param>0&bin.param<1)
       num.bin=base::rep(base::ceiling((base::nrow(cont.data)^bin.param)),num.continuous)
     }
-    if(check.cont==T){
-    cont.gr.bin=sapply(seq(1,num.continuous),function(i)length(unique(cont.data[,i]))>num.bin[i])
-    if(sum(!cont.gr.bin)>0){
-      cont.data=cont.data[,cont.gr.bin,drop=F]
-      num.continuous=ncol(cont.data)
-    }
-    }
+    #if(check.cont==T){
+    #cont.gr.bin=sapply(seq(1,num.continuous),function(i)length(unique(cont.data[,i]))>num.bin[i])
+    #if(sum(!cont.gr.bin)>0){
+    #  cont.data=cont.data[,cont.gr.bin,drop=F]
+    #  num.continuous=ncol(cont.data)
+    #}
+    #}
     if(num.continuous>0){
     which.cont=base::colnames(data)%in%base::colnames(cont.data) #logical if continuous variable
-    data[,which.cont]=base::sapply(base::seq(1,ncol(cont.data)),
-                                   function(i)continuous_bins(cont.data[,i],num.bin[i]))
+    data[,which.cont]=
+      base::lapply(base::seq(1,ncol(cont.data)),
+                                   function(i)continuous_bins(cont.data[,i],num.bins=num.bin[i],cont.limit=continuous.limits[[i]]))
+
     }else{
       which.cont=rep(F,ncol(data))
     }
   }# end if there are continuous variables
+  data[,sapply(data,function(x)!is.factor(x))]=lapply(data[,sapply(data,function(x)!is.factor(x))],as.factor)
   mv.histogram=dplyr::count(data,data[seq(1,nrow(data)),],name="Freq")
 
-  #if which.cont.out=TRUE return mv.histogram and which.cont,else only mv.histogram
+  #if which.cont.out=TRUE return mv.histogram and which.cont,
+  # if levels.out=TRUE include levels.out in output
+  # else only mv.histogram returned
   if(which.cont.out==TRUE){
-    return(base::list(mv.histogram,which.cont))
+    if(levels.out==TRUE){
+      levels.list=list(lapply(data,levels))
+      out=list(mv.histogram,which.cont,levels.list)
+      names(out)=c("mv.histogram","which.cont","levels.list")
+    }else{
+      out=list(mv.histogram,which.cont)
+      names(out)=c("mv.histogram","which.cont")
+    }
   }else{
-    return(mv.histogram)
+    if(levels.out==TRUE){
+      levels.list=list(lapply(data,levels))
+      out=list(mv.histogram,levels.list)
+      names(out)=c("mv.histogram","levels.list")
+    }else{
+      out=mv.histogram
+    }
   }
+
+  return(out)
 }
 
