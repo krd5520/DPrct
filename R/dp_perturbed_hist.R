@@ -51,7 +51,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     unif.prob1=stats::runif(rcount.above.threshold/2,1-p.above,1)
     unif.prob2=stats::runif(rcount.above.threshold/2,1-p.above,1)
     san.prop1=VGAM::qlaplace(unif.prob1,0,sc.param)
-    san.prop2=VGAM(qplaplace(unif.prob2,0,sc.param))
+    san.prop2=VGAM::qlaplace(unif.prob2,0,sc.param)
     return(c(san.prop1,san.prop2))
   }
 
