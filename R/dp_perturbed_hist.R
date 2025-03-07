@@ -88,7 +88,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     #   }
     #}
     print(summary(sanprop.zero.to.add))
-    if(sum(sanprop.zero.to.add>threshold)>0){
+    if(sum(sanprop.zero.to.add<threshold)>0){
       stop("sanprop generation has made an error")
     }
    # sanprop.zero.to.add=bins.zero.san.prop[bins.zero.san.prop>threshold]
