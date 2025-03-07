@@ -33,6 +33,24 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     message(paste("The number of histogram observations is less then 10:",nobs,"\n"))
   }
   #if using delta>0, and number of bins is high enough
+  gen_unrealized=function(missing.combos,threshold,sc.param,rseed=NA){
+    if(is.na(rseed)==FALSE){
+      set.seed(rseed)
+    }
+    # count.threshold=nobs*threshold
+    # if((1/epsilon)<1){
+    #   message("epsilon is such that the discrete laplace mechanism can be used")
+    #   p.above=extraDistr::::pdlaplace(count.threshold,mu=0, scale=(1/epsilon),lower.tail=F)
+    # }else{
+    #   message("epsilon is such that the discrete laplace mechanism can not be used")
+    #   p.above=extraDistr::::pdlaplace(count.threshold,mu=0, scale=(1/epsilon),lower.tail=F)
+    # }
+    p.above=VGAM::plaplace(threshold,scale=sc.param)
+    rcount.above.threshold=rbinom(1,missing.combos,p.above)
+    unif.prob=stats::runif(rcout.above.threshold,1-p.above,1)
+    san.prop=VGAM::qlaplace(unif.prob,0,sc.param)
+    return(san.prop)
+  }
 
 
   if(is.null(possible.combos)==TRUE){
@@ -52,19 +70,23 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
       threshold=0
     }
     sc.param=2/(nobs*epsilon)
-    if(missing.combos<=(2^14)){
-      bins.zero.san.prop= VGAM::rlaplace(missing.combos,0,sc.param)
-    }else{
-      sc.param=2/(nobs*epsilon)
-      reps.samp=missing.combos%/%(2^14)
-      bins.zero.san.prop=VGAM::rlaplace(missing.combos%%(2^14),0,sc.param)
-      bins.zero.san.prop[bins.zero.san.prop>threshold]
-      for(i in seq(1,reps.samp)){
-        temp.san.prop=VGAM::rlaplace(2^14,0,sc.param)
-        bins.zero.san.prop=c(bins.zero.san.prop,temp.san.prop[temp.san.prop>threshold])
-      }
+    sanprop.zero.to.add=gen_unrealized(missing.combos = missing.combos,threshold=threshold,sc.param=sc.param)
+    # if(missing.combos<=(2^14)){
+    #   print("missing combos <=2^14")
+    #   bins.zero.san.prop= VGAM::rlaplace(missing.combos,0,sc.param)
+    # }else{
+    #   reps.samp=missing.combos%/%(2^14)
+    #   bins.zero.san.prop=VGAM::rlaplace(missing.combos%%(2^14),0,sc.param)
+    #   bins.zero.san.prop[bins.zero.san.prop>threshold]
+    #   for(i in seq(1,reps.samp)){
+    #     temp.san.prop=VGAM::rlaplace(2^14,0,sc.param)
+    #     bins.zero.san.prop=c(bins.zero.san.prop,temp.san.prop[temp.san.prop>threshold])
+    #   }
+    #}
+    if(sum(sanprop.zero.to.add>threshold)>0){
+      stop("sanprop generation has made an error")
     }
-    sanprop.zero.to.add=bins.zero.san.prop[bins.zero.san.prop>threshold]
+   # sanprop.zero.to.add=bins.zero.san.prop[bins.zero.san.prop>threshold]
     message(paste("There are",length(sanprop.zero.to.add)," zero bins to add."))
   }
   num.bins=base::nrow(hist.df) #number of bins
@@ -100,3 +122,4 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     return(hist.df)
   }
 }
+

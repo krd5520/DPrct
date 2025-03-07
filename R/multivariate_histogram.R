@@ -72,9 +72,12 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
         continuous.limits=c(continuous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.continuous))
       }else if(ncontlim==new.num.continuous){
         message("countinus.limits provides a bound for each continuous column. std.limits input is ignored.")
-      }else{
+      }else if(ncontlim>=new.num.continuous){
+        continuous.limits=continuous.limits[seq(1,new.num.continuous)]
+        }else{
         stop("continuous.limits length with continuous.vars and standardize.cont inputs do not lead to a clear continuous.limits value for each continuous variable.")
-      }
+        }
+
       if(is.null(names(continuous.limits))==TRUE){ #if no names, name them after the continuous columns
         names(continuous.limits)=colnames(cont.data)
       }else{ #otherwise put continuous.limits in the same order as cont.data

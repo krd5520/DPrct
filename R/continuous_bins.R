@@ -20,6 +20,7 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL,cont
   }
 
   na.idx=is.na(cont.col)
+  count.col=as.numeric(cont.col)
   if(base::is.null(bin.breaks)==FALSE){ #if num.bins not provided, use bin.breaks
     if(base::is.null(bin.lab)==TRUE){ #but no bin.labels supplied. Then midpoints are labels
       bin.lab=base::as.character(0.5*(bin.breaks[base::seq(2,base::length(bin.breaks))]-
@@ -33,8 +34,8 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL,cont
     out.limits=sum(cont.col[!na.idx]<cont.limits[1]|cont.col[!na.idx]>cont.limits[2])
     if(out.limits>0){
       warning(paste("Limits on continuous variable (",paste(cont.limits,collapse = ", "),") do not contain all observed values.",out.limits,"observations have been clipped to fit limits."))
-      cont.col[(!na.idx)&cont.col[!na.idx]<cont.limits[1]]=cont.limits[1]
-      cont.col[(!na.idx)&cont.col[!na.idx]>cont.limits[2]]=cont.limits[2]
+      cont.col[((!na.idx)&(cont.col[!na.idx]<cont.limits[1]))]=cont.limits[1]
+      cont.col[((!na.idx)&(cont.col[!na.idx]>cont.limits[2]))]=cont.limits[2]
     }
     bin.breaks=seq(cont.limits[1],cont.limits[2],length.out=num.bins+1)
     if(base::is.null(bin.lab)==T){
