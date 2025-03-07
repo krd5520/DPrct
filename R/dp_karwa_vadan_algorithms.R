@@ -57,6 +57,8 @@ dp_range<-function(x,sd,epsilon,delta=0,bound.mean,range.prob){
     #warning(paste0("discetrized x before hist.df.orig:",paste0(head(discretized.x),collapse=", ")))
     hist.df.orig=as.data.frame(table(discretized.x,useNA = "ifany"))
     hist.df=dp_perturbed_hist(hist.df=hist.df.orig,epsilon=epsilon,delta=delta)
+    san.props=hist.df[[2]]
+    hist.df=hist.df[[1]]
     #l-hat in paper. This is the bin that has the highest sanitized proportion
     biggest.san.bin=as.numeric(as.character(hist.df[which.max(hist.df$san.prop),1]))
     if(length(hist.df[which.max(hist.df$san.prop),1])==0){

@@ -65,6 +65,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
       threshold=0
     }
     sanprop.zero.to.add=0
+    used.sanprop.add=F
   }else{
     missing.combos=possible.combos-nrow(hist.df)
     if((delta>0)&(possible.combos>(2/delta))){ #use Bun et al. 2016
@@ -117,7 +118,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
   #}
   total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
   hist.df$san.prop=hist.df$san.prop/total #normalize
-  if(sanprop.zero.to.add==0|length(sanprop.zero.to.add)==0){
+  if(used.sanprop.add==FALSE){
     total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
     hist.df$san.prop=hist.df$san.prop/total #normalize
     sanprop.zero.to.add=sanprop.zero.to.add/total
