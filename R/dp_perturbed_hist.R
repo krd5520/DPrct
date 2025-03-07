@@ -67,6 +67,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     sanprop.zero.to.add=0
     used.sanprop.add=F
   }else{
+    used.sanprop.add=T
     missing.combos=possible.combos-nrow(hist.df)
     if((delta>0)&(possible.combos>(2/delta))){ #use Bun et al. 2016
       threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
