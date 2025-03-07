@@ -73,7 +73,8 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
       threshold=0
     }
     sc.param=2/(nobs*epsilon)
-    sanprop.zero.to.add=gen_unrealized(missing.combos = missing.combos,threshold=threshold,sc.param=sc.param)
+    sanprop.zero.to.add=gen_unrealized(missing.combos = missing.combos,
+                                       threshold=threshold,sc.param=sc.param)
     # if(missing.combos<=(2^14)){
     #   print("missing combos <=2^14")
     #   bins.zero.san.prop= VGAM::rlaplace(missing.combos,0,sc.param)
@@ -86,6 +87,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     #     bins.zero.san.prop=c(bins.zero.san.prop,temp.san.prop[temp.san.prop>threshold])
     #   }
     #}
+    print(summary(sanprop.zero.to.add))
     if(sum(sanprop.zero.to.add>threshold)>0){
       stop("sanprop generation has made an error")
     }
