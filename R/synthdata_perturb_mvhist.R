@@ -115,10 +115,10 @@ synthdata_perturb_mvhist<-function(data,
   san.prop.zero.to.add=NULL
   if(perturb==TRUE){
     possible.combos=prod(sapply(levels.list,length))
-    freq.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos)
+    out.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos)
     if(is.list(freq.df)==TRUE){
-      san.prop.zero.to.add=freq.df[[2]]
-      freq.df=freq.df[[1]]
+      san.prop.zero.to.add=out.df[[2]]
+      freq.df=out.df[[1]]
     }
   }else{
     warning("No privacy noise added since perturb=FALSE was inputted. This is to produce a epsilon=infinity case that is simply a resampling algorithm, not a DP algorithm.")
