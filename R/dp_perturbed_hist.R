@@ -115,7 +115,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
   #if(is.null(warn.message)==FALSE){
   #  warning(warn.message)
   #}
-  total=(sum(hist.df$san.prop)+sum(san.prop.zero.to.add))
+  total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
   hist.df$san.prop=hist.df$san.prop/total #normalize
   if(length(sanprop.zero.to.add)>0){
     total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
