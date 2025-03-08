@@ -57,7 +57,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
 
 
   if(is.null(possible.combos)==TRUE){
-    message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
+    #message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
     #if(possible.combos==base::nrow(hist.df)){
     if((delta>0)&(base::nrow(hist.df)>(2/delta))){ #use Bun et al. 2016
       threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
@@ -91,10 +91,10 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     #}
     #print(summary(sanprop.zero.to.add))
     if(sum(sanprop.zero.to.add<threshold)>0){
-      stop("sanprop generation has made an error")
+      stop("Sanitized proportion generation has made an unknown error. There are produced sanitized proportions that are below the threshold.")
     }
    # sanprop.zero.to.add=bins.zero.san.prop[bins.zero.san.prop>threshold]
-    message(paste("There are",length(sanprop.zero.to.add)," zero bins to add."))
+    #message(paste("There are",length(sanprop.zero.to.add)," zero bins to add."))
   }
   num.bins=base::nrow(hist.df) #number of bins
   hist.df$san.prop=hist.df$Freq/nobs
