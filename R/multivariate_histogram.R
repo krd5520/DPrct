@@ -33,6 +33,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
   ### Check Inputs ###
   stopifnot(base::is.data.frame(data)) #check data input
 
+
   ### Multivariate Number of Bins Vector ####
   ## each entry is the number of bins for the corresponding column in data
 
@@ -60,10 +61,15 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
         cont.data=cbind(cont.data,data[,std.not.in.cont,drop=F])
       }
       new.num.continuous=ncol(cont.data)
-      std.idx=standardize.cont%in% colnames(cont.data)
-      cont.data[,standardize.cont[std.idx]]=
-        lapply(cont.data[,standardize.cont[std.idx]],
-               function(x)(x-mean(x,na.rm=T))/sqrt(var(x,na.rm=T)))
+      if(length(standardize.cont)==1){
+        std.idx=colnames(cont.data)==standardize.cont
+        cont.data[,std.idx]=(cont.data[,std.idx]-mean(cont.data[,std.idx],na.rm=T))/sqrt(var(cont.data[,std.idx],na.rm=T))
+      }else{
+        std.idx=colnames(cont.data)%in%standardize.cont
+        cont.data[,std.idx]=
+          lapply(cont.data[,std.idx],
+                 function(x)(x-mean(x,na.rm=T))/sqrt(var(x,na.rm=T)))
+      }
       ncontlim=base::length(continuous.limits)
       if((ncontlim<2)&(num.continuous>1)){
         message("Only one continuous limit supplied. It will be used for all the continuous variables. That are not standardized.")
@@ -98,6 +104,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     }
     }
 
+
   if(num.continuous>0){ #if there are continuous variables
     if(base::sum(base::sapply(cont.data,base::is.numeric))!=num.continuous){ #check columns are numeric
       stop(
@@ -126,11 +133,12 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     #}
     }
     if(num.continuous>0){
-    which.cont=base::colnames(data)%in%base::colnames(cont.data) #logical if continuous variable
-    data[,which.cont]=
+    #which.cont=which(base::colnames(data)%in%base::colnames(cont.data)) #logical if continuous variable
+    data[,colnames(cont.data)]=
       base::lapply(base::seq(1,ncol(cont.data)),
                                    function(i)continuous_bins(cont.data[,i],num.bins=num.bin[i],cont.limit=continuous.limits[[i]]))
 
+    which.cont=colnames(data)%in%colnames(cont.data)
     }else{
       which.cont=rep(F,ncol(data))
     }
