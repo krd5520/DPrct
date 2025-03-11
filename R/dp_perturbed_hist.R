@@ -27,11 +27,11 @@
 dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
 
  # warn.message=NULL
-  hist.df=hist.df[hist.df$Freq>0,,drop=F] #remove bins with 0 counts
-  nobs=base::sum(hist.df$Freq,na.rm=T) #number of observations
-  if(nobs<10){
-    message(paste("The number of histogram observations is less then 10:",nobs,"\n"))
-  }
+  #hist.df=hist.df[hist.df$Freq>0,,drop=F] #remove bins with 0 counts
+  #nobs=base::sum(hist.df$Freq,na.rm=T) #number of observations
+  #if(nobs<10){
+  #  message(paste("The number of histogram observations is less then 10:",nobs,"\n"))
+  #}
   #if using delta>0, and number of bins is high enough
   gen_unrealized=function(missing.combos,threshold,sc.param,rseed=NA){
     if(is.na(rseed)==FALSE){
@@ -45,13 +45,13 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     #   message("epsilon is such that the discrete laplace mechanism can not be used")
     #   p.above=extraDistr::::pdlaplace(count.threshold,mu=0, scale=(1/epsilon),lower.tail=F)
     # }
-    p.above=VGAM::plaplace(threshold,scale=sc.param)
+    p.above=1-VGAM::plaplace(threshold,scale=sc.param,lower.tail = T)
     rcount.above.threshold=rbinom(1,missing.combos,p.above)
     #print(rcount.above.threshold)
-    unif.prob1=stats::runif(rcount.above.threshold/2,1-p.above,1)
-    unif.prob2=stats::runif(rcount.above.threshold/2,1-p.above,1)
-    san.prop1=VGAM::qlaplace(unif.prob1,0,sc.param)
-    san.prop2=VGAM::qlaplace(unif.prob2,0,sc.param)
+    unif.prob1=stats::runif(rcount.above.threshold/2,p.above,1)
+    unif.prob2=stats::runif(rcount.above.threshold/2,p.above,1)
+    san.prop1=VGAM::qlaplace(unif.prob1,0,scale=sc.param,lower.tail=T)
+    san.prop2=VGAM::qlaplace(unif.prob2,0,scale=sc.param,lower.tail=T)
     return(c(san.prop1,san.prop2))
   }
 
@@ -74,7 +74,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     }else{ #pure-DP and low number of bins don't use a threshold
       threshold=0
     }
-    sc.param=2/(nobs*epsilon)
+    sc.param=1/(nobs*epsilon)
     sanprop.zero.to.add=gen_unrealized(missing.combos = missing.combos,
                                        threshold=threshold,sc.param=sc.param)
     # if(missing.combos<=(2^14)){
@@ -99,12 +99,12 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
   num.bins=base::nrow(hist.df) #number of bins
   hist.df$san.prop=hist.df$Freq/nobs
 
-  bins.pos=hist.df$san.prop>0
+  #bins.pos=hist.df$san.prop>threshold
 
 
   #add laplace noise
-  hist.df$san.prop[bins.pos]=(hist.df$san.prop[bins.pos]+
-                                VGAM::rlaplace(sum(bins.pos),0,2/(nobs*epsilon)))
+  hist.df$san.prop=(hist.df$san.prop+
+                                VGAM::rlaplace(nrow(hist.df),0,scale=1/(nobs*epsilon)))
   ### if use discrete laplace  extraDistr::rdlaplace(sum(bins.pos),0,2/(nobs*epsilon)))
 
   if(sum(hist.df$san.prop>threshold)+sum(sanprop.zero.to.add)==0){
@@ -117,12 +117,13 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
   #if(is.null(warn.message)==FALSE){
   #  warning(warn.message)
   #}
-  total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
-  hist.df$san.prop=hist.df$san.prop/total #normalize
+  #total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
+  #hist.df$san.prop=hist.df$san.prop/total #normalize
   if(used.sanprop.add==TRUE){
-    total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
-    hist.df$san.prop=hist.df$san.prop/total #normalize
-    sanprop.zero.to.add=sanprop.zero.to.add/total
+    #print("in used.sanprop.add==TRUE")
+    #total=(sum(hist.df$san.prop)+sum(sanprop.zero.to.add))
+    #hist.df$san.prop=hist.df$san.prop/total #normalize
+    #sanprop.zero.to.add=sanprop.zero.to.add/total
     return(list("hist.df"=hist.df,"san.prop"=sanprop.zero.to.add))
   }else{
     hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop)

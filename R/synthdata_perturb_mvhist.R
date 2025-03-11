@@ -79,7 +79,8 @@ synthdata_perturb_mvhist<-function(data,
                                    perturb=T,
                                    standardize.cont=NULL,
                                    std.limits=15,
-                                   continuous.limits=NULL){
+                                   continuous.limits=NULL,
+                                   diagnostic.file=NULL){
   start.time=proc.time()
   if(is.na(rseed)==FALSE){
     set.seed(rseed)
@@ -196,6 +197,7 @@ synthdata_perturb_mvhist<-function(data,
   # }
 
 
+
   idx.to.sample=seq(1,nrow(freq.df)+length(san.prop.zero.to.add))
   #sample rows of mv hist with probabilities equal to norm.san with replacement
   # get sample of size equal to number of rows of data.
@@ -205,6 +207,8 @@ synthdata_perturb_mvhist<-function(data,
   # (remove frequency, san.prop columns)
   synth.data<-freq.df[row.sample[row.sample<=nrow(freq.df)],colnames(freq.df)%in%colnames(data)]
   zero.to.sample=row.sample[row.sample>nrow(freq.df)]
+  num.unreal.sanprops=length(san.prop.zero.to.add)
+  num.unreal.sampled=zero.to.sample
   if(length(zero.to.sample)>0){
     zero.to.sample=as.numeric(as.factor(zero.to.sample)) #reindex 1,...,nsample
     nsample=length(unique(zero.to.sample))
@@ -212,6 +216,8 @@ synthdata_perturb_mvhist<-function(data,
                                         levels.list = levels.list,n.realized=nrow(freq.df),
                                         nsample=nsample,orig.nreal = nrow(freq.df))
     unrealized.rows=create.zero.rows[zero.to.sample,]
+    #unrealized.rows$unreal=rep(T,nrow(unrealized.rows))
+    #synth.data$unreal=rep(F,nrow(synth.data))
     synth.data= dplyr::bind_rows(synth.data,unrealized.rows)
 
     rownames(synth.data)=NULL
@@ -316,6 +322,14 @@ synthdata_perturb_mvhist<-function(data,
 
   #warning(paste("colnames are ",paste0(colnames(synth.data),collapse=", ")))
   attr(synth.data,"priv.cost")=c("epsilon"=epsilon,"delta"=delta)
+
+  if(is.null(diagnostic.file)==FALSE){
+    CON=file(diagnostic.file,"a")
+    writeLines(c("In MV Histogram:",
+      paste("Number of sanitized proportions for unrealized rows that are above the threshold:",num.unreal.sanprops),
+      paste("Number of unrealized rows sampled:",num.unreal.sampled)),CON)
+    close(CON)
+  }
 
   if(return.time==TRUE){
     #warning("inside return.time==TRUE")
