@@ -106,7 +106,6 @@ synthdata_perturb_mvhist<-function(data,
   freq.df<-mv.hist.out[["mv.histogram"]]
   which.cont=mv.hist.out[["which.cont"]]
   levels.list=(mv.hist.out[["levels.list"]])[[1]]
-  print(levels.list)
   #}else{
   #  freq.df=mv.hist.out
   #  which.cont= rep(FALSE,ncol(data)) #else all variables categorical
