@@ -325,8 +325,7 @@ synthdata_perturb_mvhist<-function(data,
 
   if(is.null(diagnostic.file)==FALSE){
     CON=file(diagnostic.file,"a")
-    writeLines(
-      paste("In MV Histogram: Unrealized rows sampled",num.unreal.sampled,"out of",num.unreal.sanprops))
+    writeLines(paste("In MV Histogram: Unrealized rows sampled",num.unreal.sampled,"out of",num.unreal.sanprops),CON)
     close(CON)
   }
 
