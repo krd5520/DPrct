@@ -208,7 +208,7 @@ synthdata_perturb_mvhist<-function(data,
   synth.data<-freq.df[row.sample[row.sample<=nrow(freq.df)],colnames(freq.df)%in%colnames(data)]
   zero.to.sample=row.sample[row.sample>nrow(freq.df)]
   num.unreal.sanprops=length(san.prop.zero.to.add)
-  num.unreal.sampled=zero.to.sample
+  num.unreal.sampled=length(zero.to.sample)
   if(length(zero.to.sample)>0){
     zero.to.sample=as.numeric(as.factor(zero.to.sample)) #reindex 1,...,nsample
     nsample=length(unique(zero.to.sample))
@@ -325,9 +325,8 @@ synthdata_perturb_mvhist<-function(data,
 
   if(is.null(diagnostic.file)==FALSE){
     CON=file(diagnostic.file,"a")
-    writeLines(c("In MV Histogram:",
-      paste("Number of sanitized proportions for unrealized rows that are above the threshold:",num.unreal.sanprops),
-      paste("Number of unrealized rows sampled:",num.unreal.sampled)),CON)
+    writeLines(
+      paste("In MV Histogram: Unrealized rows sampled",num.unreal.sample,"/",,num.unreal.sanprops))
     close(CON)
   }
 
