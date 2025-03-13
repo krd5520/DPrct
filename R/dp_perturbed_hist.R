@@ -48,11 +48,15 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     p.above=1-VGAM::plaplace(threshold,scale=sc.param,lower.tail = T)
     rcount.above.threshold=rbinom(1,missing.combos,p.above)
     #print(rcount.above.threshold)
+    if(rcount.above.threshold>0){
     unif.prob1=stats::runif(rcount.above.threshold/2,p.above,1)
     unif.prob2=stats::runif(rcount.above.threshold/2,p.above,1)
     san.prop1=VGAM::qlaplace(unif.prob1,0,scale=sc.param,lower.tail=T)
     san.prop2=VGAM::qlaplace(unif.prob2,0,scale=sc.param,lower.tail=T)
     return(c(san.prop1,san.prop2))
+    }else{
+      return(NULL)
+    }
   }
 
 
@@ -91,7 +95,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     #   }
     #}
     #print(summary(sanprop.zero.to.add))
-    if(sum(sanprop.zero.to.add<threshold)>0){
+    if((is.null(sanprop.zero.to.add)==TRUE)&&(sum(sanprop.zero.to.add<threshold)>0)){
       stop("Sanitized proportion generation has made an unknown error. There are produced sanitized proportions that are below the threshold.")
     }
    # sanprop.zero.to.add=bins.zero.san.prop[bins.zero.san.prop>threshold]
