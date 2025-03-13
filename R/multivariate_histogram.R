@@ -133,6 +133,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     #}
     }
     if(num.continuous>0){
+      print(continuous.limits)
     #which.cont=which(base::colnames(data)%in%base::colnames(cont.data)) #logical if continuous variable
     data[,colnames(cont.data)]=
       base::lapply(base::seq(1,ncol(cont.data)),
