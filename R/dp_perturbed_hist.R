@@ -56,6 +56,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
   }
 
 
+  nobs=sum(hist.df$Freq,na.rm=T)
   if(is.null(possible.combos)==TRUE){
     #message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
     #if(possible.combos==base::nrow(hist.df)){
