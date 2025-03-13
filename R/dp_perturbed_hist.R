@@ -48,6 +48,8 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     p.above=1-VGAM::plaplace(threshold,scale=sc.param,lower.tail = T)
     rcount.above.threshold=rbinom(1,missing.combos,p.above)
     #print(rcount.above.threshold)
+    print(p.above)
+    print(rcount.above.threshold)
     if(rcount.above.threshold>0){
     unif.prob1=stats::runif(rcount.above.threshold%/%2,p.above,1)
     unif.prob2=stats::runif(rcount.above.threshold-(rcount.above.threshold%/%2),p.above,1)
