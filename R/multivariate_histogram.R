@@ -193,7 +193,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       }
 
       print(base::lapply(base::seq(1,ncol(cont.data)),
-                   function(i)paste(class(cont.data[,i]),class(num.bin[i]),class(continuous.limits[[i]])))))
+                   function(i)paste(class(cont.data[,i]),class(num.bin[i]),class(continuous.limits[[i]]))))
     #which.cont=which(base::colnames(data)%in%base::colnames(cont.data)) #logical if continuous variable
     data[,colnames(cont.data)]=
       base::lapply(base::seq(1,ncol(cont.data)),
