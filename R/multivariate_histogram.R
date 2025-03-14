@@ -185,6 +185,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     #  num.continuous=ncol(cont.data)
     #}
       }
+    print(num.continuous)
     print(colnames(cont.data))
     print(continuous.vars)
     print(standardize.cont)
