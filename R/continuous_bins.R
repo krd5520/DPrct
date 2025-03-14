@@ -23,7 +23,6 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL,cont
   na.idx=is.na(cont.col)
   count.col=as.numeric(cont.col)
   if(base::is.null(bin.breaks)==FALSE){ #if num.bins not provided, use bin.breaks
-    print("bin.breaks")
     if(base::is.null(bin.lab)==TRUE){ #but no bin.labels supplied. Then midpoints are labels
       bin.lab=base::as.character(0.5*(bin.breaks[base::seq(2,base::length(bin.breaks))]-
                                         bin.breaks[base::seq(1,base::length(bin.breaks)-1)]))
@@ -32,7 +31,6 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL,cont
     #discretize the continuous data
     out.col<-cut(cont.col[!na.idx],breaks=bin.breaks,label=base::as.character(bin.lab),include.lowest=T)
   }else{ #if num.bins is given
-    print("num.bins")
     if(is.list(cont.limits)==TRUE){
       cont.limits=unlist(cont.limits)
     }
