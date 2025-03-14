@@ -29,6 +29,8 @@
 ITTtable_oneresponse=function(data,reg.model,family="gaussian",
                               treat.vars,bonferroni.npvals=NULL,control.var=NULL,
                               add.pval.stars=TRUE,stderr.func=NULL,incl.df=FALSE,...){
+  vars=all.vars(as.formula(reg.model))
+  data=data[,vars]
 
   #fit model
   mod.fit=stats::lm(reg.model,data=data)
