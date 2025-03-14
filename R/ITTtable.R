@@ -31,6 +31,8 @@ ITTtable_oneresponse=function(data,reg.model,family="gaussian",
                               add.pval.stars=TRUE,stderr.func=NULL,incl.df=FALSE,...){
   vars=all.vars(as.formula(reg.model))
   data=data[,vars]
+  na.rw=rowSums(is.na(data))
+  data=[na.rw==0,]
 
   #fit model
   mod.fit=stats::lm(reg.model,data=data)
