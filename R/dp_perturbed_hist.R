@@ -47,7 +47,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     # }
     p.above=1-VGAM::plaplace(threshold,scale=sc.param,lower.tail = T)
     rcount.above.threshold=rbinom(1,missing.combos,p.above)
-    print(paste("The rcount is",rcount.above.threshold),"and missing combos is",missing.combos)
+    print(paste("The rcount is",rcount.above.threshold,"and missing combos is",missing.combos))
     if(rcount.above.threshold>0){
     unif.prob1=stats::runif(rcount.above.threshold%/%4,p.above,1)
     unif.prob2=stats::runif(rcount.above.threshold%/%4,p.above,1)
