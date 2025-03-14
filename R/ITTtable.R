@@ -353,7 +353,6 @@ ITTtable=function(data,reg.models=NULL,
                              incl.df=include.df,
                              ...){
     y.var=as.character(stats::as.formula(reg.mods[idx]))[2]
-    print(y.var)
     tab.df=ITTtable_oneresponse(data=df,
                                 reg.model=reg.mods[idx],
                                 family=fams[idx],
