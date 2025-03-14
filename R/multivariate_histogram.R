@@ -115,8 +115,8 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
       ##  only limits supplied for variables named in continuous variables
       ##  limits supplied for more than the not standardized variables
 
-      }else if((num.cont.not.std>0)){ #there are variables that are not standardized
-          if((ncontlim==1))){
+      }else if(num.cont.not.std>0){ #there are variables that are not standardized
+          if(ncontlim==1){
             message("Only one continuous limit supplied. It will be used for all the continuous variables. That are not standardized.")
             continuous.limits=c(base::rep(continuous.limits,num.cont.not.std),rep(list(-std.limits,std.limits),new.num.continuous-num.cont.not.std))
           }else if(ncontlim==num.cont.not.std){ #add standardized limits to cont.limits
