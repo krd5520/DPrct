@@ -211,9 +211,8 @@ synthdata_perturb_mvhist<-function(data,
 
 
 
-  print(obs.sampled)
   idx.obs.sample=seq(1,obs.sampled)
-  print(freq.df$san.prop)
+
   #sample rows of mv hist with probabilities equal to norm.san with replacement
   # get sample of size equal to number of rows of data.
   row.sample<-sample(idx.obs.sample,size=nobs,
@@ -221,7 +220,6 @@ synthdata_perturb_mvhist<-function(data,
   #synthetic data has values from the sample of the histogram
   # (remove frequency, san.prop columns)
   synth.data<-freq.df[row.sample,colnames(freq.df)%in%colnames(data)]
-  print(unobs.sampled)
   if(unobs.sampled>0){
     unrealized.rows=unrealized_sampler(realized.df=freq.df[,colnames(freq.df)%in%colnames(data)],
                                         levels.list = levels.list,n.realized=nrow(freq.df),
@@ -253,7 +251,7 @@ synthdata_perturb_mvhist<-function(data,
       #   warning(paste("some continuous variable only has one value?:",paste0(cont.v[count.vals],collapse=", "),
       #                 " or something weird with NAs ",sum(is.na(count.vals))))
       # }
-      synth.data[,which.cont]=lapply(cont.v,function(cv)synth_continuous_variation(synth.data[,cv],levels.list[[cv]]))
+      synth.data[,cont.v]=lapply(cont.v,function(cv)synth_continuous_variation(unlist(synth.data[,cv]),levels.list[[cv]]))
     }
   }else{
     synth.data[,which.cont]=lapply(synth.data[,which.cont],
@@ -365,7 +363,7 @@ synth_continuous_variation<-function(cat.var,lvls){
   midpoints=as.numeric(as.character(lvls))
   n.levels=length(midpoints)
   #half the interval length is 1/2 difference between midpoints
-  half.width=(midpoints[2]-midpoints[1])/(2)
+  half.width=(max(midpoints)-min(midpoints))/(2*(n.levels-1))
   variation=stats::runif(n.rw,-half.width,half.width) #uniform rv
   cont.var=as.numeric(as.character(cat.var))+variation
   return(as.numeric(cont.var))

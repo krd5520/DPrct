@@ -30,6 +30,9 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL,cont
     #discretize the continuous data
     out.col<-cut(cont.col[!na.idx],breaks=bin.breaks,label=base::as.character(bin.lab),include.lowest=T)
   }else{ #if num.bins is given
+    if(is.list(cont.limits)==TRUE){
+      cont.limits=unlist(cont.limits)
+    }
     stopifnot(length(cont.limits)==2)
     out.limits=sum(cont.col[!na.idx]<cont.limits[1])+sum(cont.col[!na.idx]>cont.limits[2])
     if(out.limits>0){
