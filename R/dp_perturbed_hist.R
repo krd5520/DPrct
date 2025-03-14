@@ -65,7 +65,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
       threshold=0
     }
     hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
-    hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop)
+    #hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop)
     count.unobs.rows=0
     used.sanprop.add=F
   }else{
@@ -82,7 +82,6 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
                                        threshold=threshold,nobs=nobs,epsilon=epsilon)
     count.unobs.rows=out[[1]]
     normalizer=out[[1]]
-    hist.df$san.prop=hist.df$san.prop/normalizer
   }
 
   if(used.sanprop.add==TRUE){
