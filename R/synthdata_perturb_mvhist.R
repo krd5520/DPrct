@@ -220,6 +220,7 @@ synthdata_perturb_mvhist<-function(data,
   #synthetic data has values from the sample of the histogram
   # (remove frequency, san.prop columns)
   synth.data<-freq.df[row.sample,colnames(freq.df)%in%colnames(data)]
+  print(unobs.sampled)
   if(unobs.sampled>0){
     unrealized.rows=unrealized_sampler(realized.df=freq.df[,colnames(freq.df)%in%colnames(data)],
                                         levels.list = levels.list,n.realized=nrow(freq.df),
