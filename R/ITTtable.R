@@ -31,7 +31,7 @@ ITTtable_oneresponse=function(data,reg.model,family="gaussian",
                               add.pval.stars=TRUE,stderr.func=NULL,incl.df=FALSE,...){
 
   #fit model
-  mod.fit=stats::glm(reg.model,family=family,data=data,...)
+  mod.fit=stats::lm(reg.model,data=data)
   mod.summary=summary(mod.fit)$coefficients
   mod.coefs=rownames(mod.summary)
 
