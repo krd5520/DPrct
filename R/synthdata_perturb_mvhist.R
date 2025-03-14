@@ -211,11 +211,11 @@ synthdata_perturb_mvhist<-function(data,
 
 
 
-  idx.obs.sample=seq(1,obs.sampled)
+  idx.obs.sample=seq(1,nobs)
 
   #sample rows of mv hist with probabilities equal to norm.san with replacement
   # get sample of size equal to number of rows of data.
-  row.sample<-sample(idx.obs.sample,size=nobs,
+  row.sample<-sample(idx.obs.sample,size=obs.sampled,
                      replace=TRUE,prob=freq.df$san.prop)
   #synthetic data has values from the sample of the histogram
   # (remove frequency, san.prop columns)
