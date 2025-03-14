@@ -208,6 +208,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     }
   }# end if there are continuous variables
   data[,sapply(data,function(x)!is.factor(x))]=lapply(data[,sapply(data,function(x)!is.factor(x))],as.factor)
+  data=data[,orig.colnms] #reorder columns
   mv.histogram=dplyr::count(data,data[seq(1,nrow(data)),],name="Freq")
 
   #if which.cont.out=TRUE return mv.histogram and which.cont,

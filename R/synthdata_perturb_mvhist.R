@@ -118,12 +118,19 @@ synthdata_perturb_mvhist<-function(data,
     possible.combos=prod(sapply(levels.list,length))
     out.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos)
     if(is.list(freq.df)==TRUE){
-      san.prop.zero.to.add=out.df[[2]]
+      unobs.sampled=out.df[[2]]
       freq.df=out.df[[1]]
+      obs.sampled=nobs-unobs.sampled
+    }else{
+      freq.df=out.df
+      obs.sampled=nobs
+      unobs.sampled=0
     }
   }else{
     warning("No privacy noise added since perturb=FALSE was inputted. This is to produce a epsilon=infinity case that is simply a resampling algorithm, not a DP algorithm.")
     freq.df$san.prop=freq.df$Freq/sum(freq.df$Freq)
+    unobs.sampled=0
+    obs.sampled=nobs
   }
 
   san.hist.stop=proc.time()
@@ -179,9 +186,13 @@ synthdata_perturb_mvhist<-function(data,
       combo=dplyr::distinct(dplyr::bind_rows(realized.df,possible))
       new.n.realized=nrow(combo)
       new.nsample=nsample-(new.n.realized-n.realized)
-      return(unrealized_sampler(realized.df = combo,levels.list=levels.list,
+      return(unrealized_sampler(realized.df = realized.df,levels.list=levels.list,
                                 nsample=new.nsample,n.realized=new.n.realized,
                                 orig.nreal=orig.nreal,current.iter=current.iter,max.iter=max.iter))
+      ## Old only samples unique rows
+      #return(unrealized_sampler(realized.df = combo,levels.list=levels.list,
+      #                          nsample=new.nsample,n.realized=new.n.realized,
+      #                          orig.nreal=orig.nreal,current.iter=current.iter,max.iter=max.iter))
     }
   }
 
@@ -198,24 +209,18 @@ synthdata_perturb_mvhist<-function(data,
 
 
 
-  idx.to.sample=seq(1,nrow(freq.df)+length(san.prop.zero.to.add))
+  idx.obs.sample=seq(1,obs.sampled)
   #sample rows of mv hist with probabilities equal to norm.san with replacement
   # get sample of size equal to number of rows of data.
-  row.sample<-sample(idx.to.sample,size=nrow(data),
-                     replace=TRUE,prob=c(freq.df$san.prop,san.prop.zero.to.add))
+  row.sample<-sample(idx.obs.sample,size=nrow(data),
+                     replace=TRUE,prob=freq.df$san.prop)
   #synthetic data has values from the sample of the histogram
   # (remove frequency, san.prop columns)
-  synth.data<-freq.df[row.sample[row.sample<=nrow(freq.df)],colnames(freq.df)%in%colnames(data)]
-  zero.to.sample=row.sample[row.sample>nrow(freq.df)]
-  num.unreal.sanprops=length(san.prop.zero.to.add)
-  num.unreal.sampled=length(zero.to.sample)
-  if(length(zero.to.sample)>0){
-    zero.to.sample=as.numeric(as.factor(zero.to.sample)) #reindex 1,...,nsample
-    nsample=length(unique(zero.to.sample))
-    create.zero.rows=unrealized_sampler(realized.df=freq.df[,colnames(freq.df)%in%colnames(data)],
+  synth.data<-freq.df[row.sample,colnames(freq.df)%in%colnames(data)]
+  if(unobs.sampled>0){
+    unrealized.rows=unrealized_sampler(realized.df=freq.df[,colnames(freq.df)%in%colnames(data)],
                                         levels.list = levels.list,n.realized=nrow(freq.df),
-                                        nsample=nsample,orig.nreal = nrow(freq.df))
-    unrealized.rows=create.zero.rows[zero.to.sample,]
+                                        nsample=unobs.sampled,orig.nreal = nrow(freq.df))
     #unrealized.rows$unreal=rep(T,nrow(unrealized.rows))
     #synth.data$unreal=rep(F,nrow(synth.data))
     synth.data= dplyr::bind_rows(synth.data,unrealized.rows)
