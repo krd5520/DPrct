@@ -314,6 +314,8 @@ synthdata_perturb_mvhist<-function(data,
       treff.rowsums=rowSums(synth.data[,colnames(synth.data)%in%conditions[1:2]])
       synth.data$control=ifelse(treff.rowsums==0,1,0)
       synth.data[,conditions[3]]=ifelse(treff.rowsums==2,1,0)
+      synth.data[(unlist(synth.data[,conditions[3]]))==1,conditions[1]]=0
+      synth.data[(unlist(synth.data[,conditions[3]]))==1,conditions[2]]=0
 
     }else{
       #warning("factorial==FALSE")
