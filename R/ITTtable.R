@@ -32,7 +32,7 @@ ITTtable_oneresponse=function(data,reg.model,family="gaussian",
   vars=all.vars(as.formula(reg.model))
   data=data[,vars]
   na.rw=rowSums(is.na(data))
-  data=[na.rw==0,]
+  data=data[na.rw==0,]
 
   #fit model
   mod.fit=stats::lm(reg.model,data=data)
