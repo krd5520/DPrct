@@ -30,7 +30,7 @@ ITTtable_oneresponse=function(data,reg.model,family="gaussian",
                               treat.vars,bonferroni.npvals=NULL,control.var=NULL,
                               add.pval.stars=TRUE,stderr.func=NULL,incl.df=FALSE,...){
   vars=all.vars(as.formula(reg.model))
-  data=data[,vars]
+  data=data[,c(vars,"control")]
   na.rw=rowSums(is.na(data))
   data=data[na.rw==0,]
 
