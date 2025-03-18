@@ -97,7 +97,7 @@ synthdata_perturb_mvhist<-function(data,
   if(is.null(cat.vars)==TRUE){
   which.cat=sapply(seq(1,ncol(data)),function(x)is.factor(data[,x])|is.character(data[,x]))
   }else{
-    which.cat=sapply(seq(1,ncol(data)),function(x)colnames(data)[x]%in%c(cat,vars))
+    which.cat=sapply(seq(1,ncol(data)),function(x)colnames(data)[x]%in%c(cat.vars))
   }
   #get multivariate histogram for mixed data types.
   #print("before mv.hist.out on line 97")
