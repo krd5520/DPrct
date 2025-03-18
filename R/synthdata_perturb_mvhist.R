@@ -62,6 +62,7 @@ synthdata_perturb_mvhist<-function(data,
                                    epsilon,
                                    delta=0,
                                    continuous.vars=NULL,
+                                   cat.vars=NULL,
                                    num.bin=NULL,
                                    bin.param=NA,
                                    add.cont.variation=FALSE,
@@ -93,7 +94,11 @@ synthdata_perturb_mvhist<-function(data,
   ### Check Inputs ###
   stopifnot(is.numeric(epsilon)&&epsilon>0)
 
+  if(is.null(cat.vars)==TRUE){
   which.cat=sapply(seq(1,ncol(data)),function(x)is.factor(data[,x])|is.character(data[,x]))
+  }else{
+    which.cat=sapply(seq(1,ncol(data)),function(x)colnames(data)[x]%in%c(cat,vars))
+  }
   #get multivariate histogram for mixed data types.
   #print("before mv.hist.out on line 97")
   #print(continuous.limits)
@@ -233,8 +238,12 @@ synthdata_perturb_mvhist<-function(data,
   }
 
   #force columns to be factors or numeric (add variation if needed)
+  if(sum(which.cat)>1){
   synth.data[,which.cat]=lapply(synth.data[,which.cat],
                                 function(col)as.factor(as.character(col)))
+  }else if(sum(which.cat)==1){
+    synth.data[,which.cat]=as.factor(as.character(synth.data[,which.cat]))
+  }
   if(add.cont.variation==TRUE){# if adding uniform variation for continuous values
     cont.v=colnames(synth.data[,which.cont,drop=F])
     if(length(cont.v)==0){
