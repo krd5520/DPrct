@@ -174,7 +174,7 @@ synthdata_perturb_mvhist<-function(data,
     unrealized.rows=unrealized_sampler(realized.df=freq.df[,colnames(freq.df)%in%colnames(data)],
                                         levels.list = levels.list,n.realized=nrow(freq.df),
                                         nsample=unobs.sampled,orig.nreal = nrow(freq.df))
-    unreal.san.prop=VGAM::rlaplace(unobs.sampled,0,1/(nobs*epsilon))
+    unreal.san.prop=stats::rexp(unobs.sampled,(nobs*epsilon))
     unreal.sample.idx=sample(seq(1,unobs.sampled),prob = unreal.san.prop,replace = T)
     unrealized.sample=unreal.rows[unreal.sample.idx,]
     #unrealized.rows$unreal=rep(T,nrow(unrealized.rows))
