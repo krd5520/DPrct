@@ -21,33 +21,33 @@
 #'
 #' @family syntheticData
 #' @importFrom VGAM rlaplace
+#' @importFrom stats rbinom rgamma
 #' @noRd
 
 
 dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
 
- # warn.message=NULL
-  #hist.df=hist.df[hist.df$Freq>0,,drop=F] #remove bins with 0 counts
-  #nobs=base::sum(hist.df$Freq,na.rm=T) #number of observations
-  #if(nobs<10){
-  #  message(paste("The number of histogram observations is less then 10:",nobs,"\n"))
-  #}
-  #if using delta>0, and number of bins is high enough
 
-  #san.props is sanitized proportions of observed rows, missing.combos is count of unobserved possible combinations
-  #
-  gen_unrealized=function(san.props,missing.combos,epsilon,nobs,rseed=NA){
+  # san.props is sanitized proportions of observed rows,
+  # missing.combos is count of unobserved possible combinations
+  # epsilon is privacy parameter
+  # nobs is number of rows in confidential data
+  # rseed sets the random seed if !=NA
+  # if quiet==F, then message about unobserved rows sampled is printed.
+  gen_unrealized=function(san.props,missing.combos,epsilon,nobs,rseed=NA,quiet=F){
     if(is.na(rseed)==FALSE){
       set.seed(rseed)
     }
     sc.param=1/(nobs*epsilon)
-    rcount.above.threshold=rbinom(1,missing.combos,0.5)
-    sumexp=rgamma(1,rcount.above.threshold,1/sc.param)
+    rcount.above.threshold=stats::rbinom(1,missing.combos,0.5)
+    sumexp=stats::rgamma(1,rcount.above.threshold,1/sc.param)
     p.select.unobserved=sumexp/(sum(san.props)+sumexp)
-    rcount.select.unobserved=rbinom(1,nobs,p.select.unobserved)
+    rcount.select.unobserved=stats::rbinom(1,nobs,p.select.unobserved)
     #rcount.select.observed=nobs-rcount.select.unobserved
+    if(quiet==F){
     message(paste("Number of unobserved rows selected is:",rcount.select.unobserved))
-    return(list(rcount.select.unobserved,sum(san.props)+sumexp))
+    }
+    return(list("count.unobs.sampled"=rcount.select.unobserved,"normalizer"=sum(san.props)+sumexp))
   }
 
 
