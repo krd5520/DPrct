@@ -34,12 +34,14 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
   #}
   #if using delta>0, and number of bins is high enough
 
-  gen_unrealized=function(san.props,missing.combos,threshold,epsilon,nobs,rseed=NA){
+  #san.props is sanitized proportions of observed rows, missing.combos is count of unobserved possible combinations
+  #
+  gen_unrealized=function(san.props,missing.combos,epsilon,nobs,rseed=NA){
     if(is.na(rseed)==FALSE){
       set.seed(rseed)
     }
     sc.param=1/(nobs*epsilon)
-    rcount.above.threshold=rbinom(1,missing.combos,threshold)
+    rcount.above.threshold=rbinom(1,missing.combos,0.5)
     sumexp=rgamma(1,rcount.above.threshold,1/sc.param)
     p.select.unobserved=sumexp/(sum(san.props)+sumexp)
     rcount.select.unobserved=rbinom(1,nobs,p.select.unobserved)
