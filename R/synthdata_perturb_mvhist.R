@@ -176,7 +176,7 @@ synthdata_perturb_mvhist<-function(data,
                                         nsample=unobs.sampled,orig.nreal = nrow(freq.df))
     unreal.san.prop=stats::rexp(unobs.sampled,(nobs*epsilon))
     unreal.sample.idx=sample(seq(1,unobs.sampled),prob = unreal.san.prop,replace = T)
-    unrealized.sample=unreal.rows[unreal.sample.idx,]
+    unrealized.sample=unrealized.rows[unreal.sample.idx,]
     #unrealized.rows$unreal=rep(T,nrow(unrealized.rows))
     #synth.data$unreal=rep(F,nrow(synth.data))
     synth.data= dplyr::bind_rows(synth.data,unrealized.sample)
