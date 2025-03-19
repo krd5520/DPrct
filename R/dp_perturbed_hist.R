@@ -81,7 +81,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
     sc.param=1/(nobs*epsilon)
     out=gen_unrealized(san.props=hist.df$san.prop, missing.combos = missing.combos,
-                                       threshold=threshold,nobs=nobs,epsilon=epsilon)
+                                       nobs=nobs,epsilon=epsilon)
     count.unobs.rows=out[[1]]
     normalizer=out[[1]]
   }
