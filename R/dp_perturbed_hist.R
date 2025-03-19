@@ -41,7 +41,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL){
     sc.param=1/(nobs*epsilon)
     rcount.above.threshold=rbinom(1,missing.combos,threshold)
     sumexp=rgamma(1,rcount.above.threshold,1/sc.param)
-    p.select.unobserved=sumexp/(sum(san.props+sumexp))
+    p.select.unobserved=sumexp/(sum(san.props)+sumexp)
     rcount.select.unobserved=rbinom(1,nobs,p.select.unobserved)
     #rcount.select.observed=nobs-rcount.select.unobserved
     message(paste("Number of unobserved rows selected is:",rcount.select.unobserved))
