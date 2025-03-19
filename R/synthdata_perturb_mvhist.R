@@ -216,6 +216,7 @@ synthdata_perturb_mvhist<-function(data,
 
 
 
+  num.unreal.sampled=unobs.sampled
   idx.obs.sample=seq(1,length(freq.df$san.prop))
 
   #sample rows of mv hist with probabilities equal to norm.san with replacement
