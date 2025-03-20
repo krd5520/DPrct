@@ -38,7 +38,14 @@
 #' @param standardized.cont a vector of column names to transform to a standardized
 #'    form (x_i-avg x)/std.dev. of x. If \code{NULL}, then no variable is transformed.
 #' @param std.limits a numeric value for the number of standard deviations away from the mean
-#'    to set the transformed standardized column limits to. Default is 15.
+#'    to set the transformed standardized column limits to. Default is 5.
+#' @param diagnostic.file a character string which is an existing text file to print number
+#'    of unobserved rows sampled in the perturbed multivariate histogram. If
+#'    \code{diagnostic.file=NULL} (default), then this information will not be added to a file.
+#' @param quietly a logical to indicate if messages should be suppressed.
+#' @param cat.vars a character vector of column names that are categorical variables.
+#'    If \code{cat.vars=NULL}, then only columns that are character or factor types are
+#'    treated as categorical.
 #' @return a synthetic data.frame for confidential data (inputted as \code{data})
 #'    that satisfies (\code{epsilon},\code{delta})-DP using the perturbed
 #'    multivariate histogram method.
@@ -79,11 +86,12 @@ synthdata_perturb_mvhist<-function(data,
                                    conditions=NULL,
                                    perturb=T,
                                    standardize.cont=NULL,
-                                   std.limits=15,
+                                   std.limits=5,
                                    continuous.limits=NULL,
-                                   diagnostic.file=NULL){
-  start.time=proc.time()
-  if(is.na(rseed)==FALSE){
+                                   diagnostic.file=NULL,
+                                   quietly=T){
+  start.time=proc.time() #start time
+  if(is.na(rseed)==FALSE){ #set random seed if provided
     set.seed(rseed)
   }
 
@@ -91,22 +99,25 @@ synthdata_perturb_mvhist<-function(data,
   if((is.data.frame(data)==FALSE)&&(length(data)>0)){
     data=data.frame("covariate"=data)
   }
-  ### Check Inputs ###
+
+  ##### Check Inputs ######
   stopifnot(is.numeric(epsilon)&&epsilon>0)
 
+  #get indicators for categorical columns
   if(is.null(cat.vars)==TRUE){
   which.cat=sapply(seq(1,ncol(data)),function(x)is.factor(data[,x])|is.character(data[,x]))
   }else{
     which.cat=sapply(seq(1,ncol(data)),function(x)colnames(data)[x]%in%c(cat.vars))
   }
+
   #get multivariate histogram for mixed data types.
-  #print("before mv.hist.out on line 97")
-  #print(continuous.limits)
   mv.hist.out=multivariate_histogram(data=data,continuous.vars = continuous.vars,
                                      continuous.limits=continuous.limits,
                                      num.bin = num.bin,bin.param=bin.param,
                                      which.cont.out=TRUE,levels.out=T,
-                                     std.limits=std.limits,standardize.cont=standardize.cont)
+                                     std.limits=std.limits,
+                                     standardize.cont=standardize.cont,
+                                     quietly=quietly)
   #if(is.list(mv.hist.out)==TRUE){
   freq.df<-mv.hist.out[["mv.histogram"]]
   which.cont=mv.hist.out[["which.cont"]]
@@ -122,7 +133,7 @@ synthdata_perturb_mvhist<-function(data,
   san.prop.zero.to.add=NULL
   if(perturb==TRUE){
     possible.combos=prod(sapply(levels.list,length))
-    out.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos)
+    out.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos,quietly=quietly,sensitivity.multiplier=1)
     if(is.list(freq.df)==TRUE){
       unobs.sampled=as.numeric(out.df[[2]])
       freq.df=out.df[[1]]
@@ -248,7 +259,9 @@ synthdata_perturb_mvhist<-function(data,
         warn.mess=paste("column named 'treatment' will summarize the treatment variables.",
                         ifelse(length(treatment.colname)==0," ",
                                "Inputted treatment.colname will be the column names of the indicator columns."))
+        if(quietly==F){
         message(warn.mess)
+        }
         treatment.colname="treatment"
       }
       for(i in c(1,2)){
@@ -424,7 +437,9 @@ unrealized_sampler=function(realized.df,levels.list,nsample,n.realized=NA,curren
     stop(paste("Iterations in unrealized sampler exceed the max iterations: ",max.iter))
   }
   if(nrow(realized.df)>=n.realized+nsample){
+    if(quietly==FALSE){
     base::message(paste("Iterations to sample unrealized combinations of variables:",current.iter))
+    }
     return(realized.df[-seq(1,orig.nreal),])
   }else{
     if(nsample==1){

@@ -15,6 +15,7 @@
 #'    to set the transformed standardized column limits to. Default is 15.
 #' @param which.cont.out a logical if TRUE, return which.count and histogram data.frame.
 #'    Default FALSE only returns histogram data.frame
+#' @param quietly a logical to indicate if messages should be suppressed.
 #' @param return.time a logical to indicate if the computation times should be
 #'    returned with the synthetic data. Default is \code{FALSE}.
 #' @return if which.count.out=FALSE, returns a data frame with frequencies of each combination of categorical and discretized continuous variables. If which.cont.out=TRUE and there are continuous variables, returns a list with the first element is the mv histogram and the second is the which.cont variable.
@@ -29,7 +30,7 @@
 multivariate_histogram<-function(data,continuous.vars=NULL,
                                  num.bin=NULL,bin.param=NA,continuous.limits=NULL,
                                  which.cont.out=FALSE,levels.out=FALSE,
-                                 return.time=TRUE,std.limits=5,standardize.cont=NULL){#,check.cont=F){
+                                 return.time=TRUE,std.limits=5,standardize.cont=NULL,quietly=T){#,check.cont=F){
   ### Check Inputs ###
   stopifnot(base::is.data.frame(data)) #check data input
 
@@ -57,7 +58,11 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     if(base::ncol(cont.data)==0){
       continuous.vars=NULL
       num.continuous=0
-      message(paste0("No continuous variables detected. Dimension of cont.data is...",dim(cont.data),"... and length of continuous.vars is...",length(continuous.vars)))
+      if(quietly==FALSE){
+      message(paste0("No continuous variables detected. Dimension of cont.data is...",
+                     paste0(dim(cont.data),collapse=" by "),
+                     "... and length of continuous.vars is...",length(continuous.vars)))
+      }
     }
 
     #number of continuous variables
@@ -89,7 +94,9 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
           lapply(cont.data[,std.idx],
                  function(x)(x-mean(x,na.rm=T))/sqrt(var(x,na.rm=T)))
       }else{ #no standardized
+        if(quietly==FALSE){
         message("standardize.cont where not variables in data. Nothing to standardize")
+        }
       }
 
 
@@ -104,7 +111,9 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
 
       #more limits supplied than continuous variables
       if(ncontlim>=new.num.continuous){
+        if(quietly==FALSE){
           message("countinus.limits provides a bound for each continuous column. std.limits input is ignored.")
+        }
           continuous.limits=continuous.limits[seq(1,new.num.continuous)]
 
 
@@ -117,7 +126,9 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
 
       }else if(num.cont.not.std>0){ #there are variables that are not standardized
           if(ncontlim==1){
-            message("Only one continuous limit supplied. It will be used for all the continuous variables. That are not standardized.")
+            if(quietly==FALSE){
+            message("Only one continuous limit supplied. Used for all not-standardized continuous variables.")
+            }
             continuous.limits=c(base::rep(continuous.limits,num.cont.not.std),rep(list(-std.limits,std.limits),new.num.continuous-num.cont.not.std))
           }else if(ncontlim==num.cont.not.std){ #add standardized limits to cont.limits
             continuous.limits=c(continuous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.cont.not.std))
@@ -130,7 +141,9 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
         }
       }else{ #there are standardized and no variables that are not standardized
         if(ncontlim==0){
+          if(quietly==FALSE){
           message("No continuous limits supplied. Used std.limits for all variables.")
+          }
           continuous.limits=rep(list(-std.limits,std.limits),new.num.continuous)
         }else if(ncontlim==num.continuous){
           continuous.limits=c(continuous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.continous))
@@ -147,7 +160,9 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
           continuous.limits=continuous.limits[names.order]
         }
         if((base::length(continuous.limits)<2)&(num.continuous>1)){
+          if(quietly==FALSE){
           message("Only one continuous limit supplied. It will be used for all the continuous variables.")
+          }
           continuous.limits=base::rep(continuous.limits,num.continuous)
         }else if(length(continuous.limits)>=num.continuous){
           continuous.limits=continuous.limits[seq(1,num.continuous)]
