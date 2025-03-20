@@ -67,7 +67,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
   hist.df$san.prop=hist.df$Freq/nobs
   #add laplace noise
   hist.df$san.prop=(hist.df$san.prop+
-                      VGAM::rlaplace(num.bins,0,scale=sensitivity.multiplier*(1/(nobs*epsilon)))
+                      VGAM::rlaplace(num.bins,0,scale=sensitivity.multiplier*(1/(nobs*epsilon))))
 
   if(is.null(possible.combos)==TRUE){
     #message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
