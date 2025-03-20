@@ -184,7 +184,7 @@ synthdata_perturb_mvhist<-function(data,
   if(unobs.sampled>0){
     unrealized.rows=unrealized_sampler(realized.df=freq.df[,colnames(freq.df)%in%colnames(data)],
                                         levels.list = levels.list,n.realized=nrow(freq.df),
-                                        nsample=unobs.sampled,orig.nreal = nrow(freq.df))
+                                        nsample=unobs.sampled,orig.nreal = nrow(freq.df),quietly=quietly)
     unreal.san.prop=stats::rexp(unobs.sampled,(nobs*epsilon))
     unreal.sample.idx=sample(seq(1,unobs.sampled),prob = unreal.san.prop,replace = T)
     unrealized.sample=unrealized.rows[unreal.sample.idx,]
@@ -410,18 +410,19 @@ synth_continuous_variation<-function(cat.var,lvls){
 #' @param levels.list a named list where the name is each column of the original data
 #'    and the values are the possible levels for that column
 #' @param nsample number of unique unrealized rows to be generated
-#' @param n.realized default=NA (used for recursion)
-#' @param current.iter default=0 (used for recursion)
-#' @param orig.nreal default=NA (used for recursion)
+#' @param n.realized default is \code{NA} (used for recursion)
+#' @param current.iter default is 0 (used for recursion)
+#' @param orig.nreal default is \code{NA} (used for recursion)
+#' @param quietly logical to indicate if messages should be suppressed
 #' @param max.iter default=1000, maximum number of iterations to try to sample the unrealized rows
-#' @return a data.frame with nsample unique unrealized rows
+#' @return a data.frame with \code{nsample} unique unrealized rows
 #'
 #' @importFrom dplyr distinct bind_rows
 #' @family syntheticData
 #' @noRd
 #'
 
-unrealized_sampler=function(realized.df,levels.list,nsample,n.realized=NA,current.iter=0,orig.nreal=NA,max.iter=1000){
+unrealized_sampler=function(realized.df,levels.list,nsample,n.realized=NA,current.iter=0,orig.nreal=NA,max.iter=1000,quietly=T){
   current.iter=current.iter+1
   #rownames(realized.df)=NULL
   if(is.na(n.realized)==TRUE){
@@ -460,7 +461,7 @@ unrealized_sampler=function(realized.df,levels.list,nsample,n.realized=NA,curren
     ## Old only samples unique rows
     return(unrealized_sampler(realized.df = combo,levels.list=levels.list,
                               nsample=new.nsample,n.realized=new.n.realized,
-                              orig.nreal=orig.nreal,current.iter=current.iter,max.iter=max.iter))
+                              orig.nreal=orig.nreal,current.iter=current.iter,max.iter=max.iter,quietly=quietly))
   }
 }
 
