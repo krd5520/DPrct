@@ -67,7 +67,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
       nobs=sum(hist.df$Freq,na.rm=T)
       num.bins=base::nrow(hist.df) #number of bins
       hist.df$san.prop=hist.df$Freq/nobs
-      indic.zeros=hist.df$san.prop==0
+      indic.zeros=ifelse(hist.df$san.prop==0,T,F)
       threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
       #add laplace noise
       hist.df$san.prop=(hist.df$san.prop+
@@ -76,7 +76,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
       hist.df$san.prop[indic.zeros]=0
       hist.df$san.prop[hist.df$san.prop<=threshold]=0
       #normalize
-      hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop)
+      hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop,na.rm=T)
       return(hist.df)
     }else{
       stop(paste0("K=",K,"not larger than 2/delta=",round(2/delta,3)," thus Bun et al., 2016 Histogram Learner cannot be used."))

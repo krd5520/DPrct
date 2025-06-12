@@ -135,13 +135,13 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
             if(quietly==FALSE){
             message("Only one continuous limit supplied. Used for all not-standardized continuous variables.")
             }
-            continuous.limits=c(base::rep(continuous.limits,num.cont.not.std),rep(list(-std.limits,std.limits),new.num.continuous-num.cont.not.std))
+            continuous.limits=c(base::rep(continuous.limits,num.cont.not.std),rep(list(c(-std.limits,std.limits)),new.num.continuous-num.cont.not.std))
           }else if(ncontlim==num.cont.not.std){ #add standardized limits to cont.limits
-            continuous.limits=c(continuous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.cont.not.std))
+            continuous.limits=c(continuous.limits,rep(list(c(-std.limits,std.limits)),new.num.continuous-num.cont.not.std))
           }else if(ncontlim==num.continuous){
-            continuous.limits=c(continuous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.continous))
+            continuous.limits=c(continuous.limits,rep(list(c(-std.limits,std.limits)),new.num.continuous-num.continous))
           }else if(ncontlim>num.cont.not.std){
-            continuous.limits=c(continuous.limits,rep(list(-std.limits,std.limits),new.num.continuous-ncontlim))
+            continuous.limits=c(continuous.limits,rep(list(c(-std.limits,std.limits)),new.num.continuous-ncontlim))
           }else{
           stop("continuous.limits length with continuous.vars and standardize.cont inputs do not lead to a clear continuous.limits value for each continuous variable.")
         }
@@ -150,9 +150,9 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
           if(quietly==FALSE){
           message("No continuous limits supplied. Used std.limits for all variables.")
           }
-          continuous.limits=rep(list(-std.limits,std.limits),new.num.continuous)
+          continuous.limits=rep(list(c(-std.limits,std.limits)),new.num.continuous)
         }else if(ncontlim==num.continuous){
-          continuous.limits=c(continuous.limits,rep(list(-std.limits,std.limits),new.num.continuous-num.continous))
+          continuous.limits=c(continuous.limits,rep(list(c(-std.limits,std.limits)),new.num.continuous-num.continous))
         }else{
           stop("continuous.limits length with continuous.vars and standardize.cont inputs do not lead to a clear continuous.limits value for each continuous variable.")
         }
