@@ -61,40 +61,59 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
     return(list("count.unobs.sampled"=rcount.select.unobserved,"normalizer"=sum(san.props[san.props>threshold])+sumexp+(threshold*rcount.above.threshold)))
   }
 
-
-  nobs=sum(hist.df$Freq,na.rm=T)
-  num.bins=base::nrow(hist.df) #number of bins
-  hist.df$san.prop=hist.df$Freq/nobs
-  #add laplace noise
-  hist.df$san.prop=(hist.df$san.prop+
-                      VGAM::rlaplace(num.bins,0,scale=sensitivity.multiplier*(1/(nobs*epsilon))))
-
-  if(is.null(possible.combos)==TRUE){
-    #message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
-    #if(possible.combos==base::nrow(hist.df)){
-    if((delta>0)&(base::nrow(hist.df)>(2/delta))){ #use Bun et al. 2016
+  ## Approximate DP perturbed histogram
+  dp_perturbed_hist_approxDP<-function(hist.df,epsilon,delta,K,quietly=T,sensitivity.multiplier=2){
+    if(K>(2/delta)){#Use Bun et al., 2016
+      nobs=sum(hist.df$Freq,na.rm=T)
+      num.bins=base::nrow(hist.df) #number of bins
+      hist.df$san.prop=hist.df$Freq/nobs
+      indic.zeros=hist.df$san.prop==0
       threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
-    }else{ #pure-DP and low number of bins don't use a threshold
-      threshold=0
+      #add laplace noise
+      hist.df$san.prop=(hist.df$san.prop+
+                          VGAM::rlaplace(nrow(hist.df),0,scale=sensitivity.multiplier*(1/(nobs*epsilon))))
+
+      hist.df$san.prop[indic.zeros]=0
+      hist.df$san.prop[hist.df$san.prop<=threshold]=0
+      #normalize
+      hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop)
+      return(hist.df)
+    }else{
+      stop(paste0("K=",K,"not larger than 2/delta=",round(2/delta,3)," thus Bun et al., 2016 Histogram Learner cannot be used."))
     }
-    hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
+
+  }
+
+
+  if(delta>0){#approximate DP
+    if(is.null(possible.combos)==TRUE){
+      message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
+      possible.combos=base::nrow(hist.df)
+    }
+    hist.df=dp_perturbed_hist_approxDP(hist.df=hist.df,epsilon=epsilon,delta=delta,K=nrow(hist.df),quietly=quietly,sensitivity.multiplier=sensitivity.multiplier)
     #hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop)
     count.unobs.rows=0
     used.sanprop.add=F
   }else{
+    if(is.null(possible.combos)==TRUE){
+      message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
+      possible.combos=base::nrow(hist.df)
+    }
     used.sanprop.add=T
     missing.combos=possible.combos-nrow(hist.df)
-    if((delta>0)&(possible.combos>(2/delta))){ #use Bun et al. 2016
-      threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
-    }else{ #pure-DP and low number of bins don't use a threshold
-      threshold=0
-    }
-    hist.df$san.prop=base::pmax(hist.df$san.prop,threshold)
+    nobs=sum(hist.df$Freq,na.rm=T)
+    num.bins=base::nrow(hist.df) #number of bins
+    hist.df$san.prop=hist.df$Freq/nobs
+    #add laplace noise
+    hist.df$san.prop=(hist.df$san.prop+
+                        VGAM::rlaplace(num.bins,0,scale=sensitivity.multiplier*(1/(nobs*epsilon))))
+
+    hist.df$san.prop=pmax(hist.df$san.prop,0)
     sc.param=1/(nobs*epsilon)
     out=gen_unrealized(san.props=hist.df$san.prop, missing.combos = missing.combos,
-                                       threshold=threshold,nobs=nobs,epsilon=epsilon)
+                                       threshold=0,nobs=nobs,epsilon=epsilon)
     count.unobs.rows=out[[1]]
-    normalizer=out[[1]]
+    normalizer=out[[2]]
   }
 
   if(used.sanprop.add==TRUE){
@@ -106,7 +125,8 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
   }else{
     return(hist.df)
   }
-}
+  }
+
 
 
 
@@ -143,4 +163,5 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
 #   }
 # }
 #
+
 
