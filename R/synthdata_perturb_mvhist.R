@@ -118,14 +118,14 @@ synthdata_perturb_mvhist<-function(data,
                                      std.limits=std.limits,
                                      standardize.cont=standardize.cont,
                                      quietly=quietly)
-  #if(is.list(mv.hist.out)==TRUE){
+  if((is.list(mv.hist.out)==TRUE)&(is.data.frame(mv.hist.out)==FALSE)){
   freq.df<-mv.hist.out[["mv.histogram"]]
   which.cont=mv.hist.out[["which.cont"]]
   levels.list=(mv.hist.out[["levels.list"]])[[1]]
-  #}else{
-  #  freq.df=mv.hist.out
-  #  which.cont= rep(FALSE,ncol(data)) #else all variables categorical
-  #}
+  }else{
+    freq.df=mv.hist.out
+    which.cont= rep(FALSE,ncol(data)) #else all variables categorical
+  }
   mv.hist.stop=proc.time()
   mv.hist.time=(mv.hist.stop-start.time)[[3]]
 
@@ -134,7 +134,7 @@ synthdata_perturb_mvhist<-function(data,
   if(perturb==TRUE){
     possible.combos=prod(sapply(levels.list,length))
     out.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos,quietly=quietly,sensitivity.multiplier=2)
-    if(is.list(freq.df)==TRUE){
+    if((is.list(out.df)==TRUE)&(is.data.frame(out.df)==FALSE)){
       unobs.sampled=as.numeric(out.df[[2]])
       freq.df=out.df[[1]]
       #print(unobs.sampled)

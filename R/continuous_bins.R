@@ -34,7 +34,7 @@ continuous_bins<-function(cont.col,num.bins=NA,bin.breaks=NULL,bin.lab=NULL,cont
     if(is.list(cont.limits)==TRUE){
       cont.limits=unlist(cont.limits)
     }
-    stopifnot(length(cont.limits)==2)
+    #stopifnot(length(cont.limits)==2)
     out.limits=sum(cont.col[!na.idx]<cont.limits[1])+sum(cont.col[!na.idx]>cont.limits[2])
     if(out.limits>0){
       warning(paste("Limits on continuous variable (",paste(cont.limits,collapse = ", "),") do not contain all observed values.",out.limits,"observations have been clipped to fit limits."))
