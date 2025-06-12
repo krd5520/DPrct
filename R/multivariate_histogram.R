@@ -88,11 +88,17 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
         std.idx=(colnames(cont.data)==standardize.cont)
         pre.std.data=unlist(cont.data[,std.idx])
         cont.data[,std.idx]=(pre.std.data-mean(pre.std.data,na.rm=T))/sqrt(var(pre.std.data,na.rm=T))
+        #newlimit=list(c(-std.limits,std.limits))
+        #names(newlimit)=colnames(cont.data)[std.idx]
+        #continuous.limits=c(continuous.limits,newlimit)
       }else if(length(standardize.cont)>1){ #more than 1 standardize
         std.idx=(colnames(cont.data)%in%standardize.cont)
         cont.data[,std.idx]=
           lapply(cont.data[,std.idx],
                  function(x)(x-mean(x,na.rm=T))/sqrt(var(x,na.rm=T)))
+        #newlimits=rep(list(c(-std.limits,std.limits)))
+        #names(newlimits)=colnames(cont.data)[std.idx]
+        #continuous.limits=c(continuous.limits,newlimits)
       }else{ #no standardized
         if(quietly==FALSE){
         message("standardize.cont where not variables in data. Nothing to standardize")
@@ -212,7 +218,7 @@ multivariate_histogram<-function(data,continuous.vars=NULL,
     #which.cont=which(base::colnames(data)%in%base::colnames(cont.data)) #logical if continuous variable
     data[,colnames(cont.data)]=
       base::lapply(base::seq(1,ncol(cont.data)),
-                                   function(i)continuous_bins(cont.data[,i],num.bins=num.bin[i],cont.limit=continuous.limits[[i]]))
+                                   function(i)continuous_bins(cont.data[,i],num.bins=num.bin[i],cont.limit=unname(unlist(continuous.limits[[i]]))))
 
     which.cont=colnames(data)%in%colnames(cont.data)
     }else if(num.continuous==1){
