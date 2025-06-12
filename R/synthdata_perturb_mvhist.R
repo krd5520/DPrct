@@ -133,7 +133,7 @@ synthdata_perturb_mvhist<-function(data,
   san.prop.zero.to.add=NULL
   if(perturb==TRUE){
     possible.combos=prod(sapply(levels.list,length))
-    out.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos,quietly=quietly,sensitivity.multiplier=1)
+    out.df=dp_perturbed_hist(hist.df=freq.df,epsilon = epsilon,delta=delta,possible.combos=possible.combos,quietly=quietly,sensitivity.multiplier=2)
     if(is.list(freq.df)==TRUE){
       unobs.sampled=as.numeric(out.df[[2]])
       freq.df=out.df[[1]]
