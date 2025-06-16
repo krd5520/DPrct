@@ -86,11 +86,14 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
 
 
   if(delta>0){#approximate DP
-    if(is.null(possible.combos)==TRUE){
-      message("No possible.combos provided. It is assumed all potential combinations of variables are represented in hist.df.")
-      possible.combos=base::nrow(hist.df)
-    }
-    hist.df=dp_perturbed_hist_approxDP(hist.df=hist.df,epsilon=epsilon,delta=delta,K=nrow(hist.df),quietly=quietly,sensitivity.multiplier=sensitivity.multiplier)
+      if(is.null(possible.combos)==TRUE){
+        no.freq=dplyr::select(hist.df,-Freq)
+        length.unique=sapply(seq(1,ncol(no.freq)),function(i)length(unique(unname(unlist(no.freq[,i])))))
+        K=prod(length.unique)
+        message(paste("No possible combos provided. It is assumed all possible combinations are represented in hist.df: K=",K))
+        possible.combos=K
+      }
+    hist.df=dp_perturbed_hist_approxDP(hist.df=hist.df,epsilon=epsilon,delta=delta,K=possible.combos,quietly=quietly,sensitivity.multiplier=sensitivity.multiplier)
     #hist.df$san.prop=hist.df$san.prop/sum(hist.df$san.prop)
     count.unobs.rows=0
     used.sanprop.add=F
