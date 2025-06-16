@@ -68,7 +68,7 @@ dp_perturbed_hist<-function(hist.df,epsilon,delta=0,possible.combos=NULL,quietly
       num.bins=base::nrow(hist.df) #number of bins
       hist.df$san.prop=hist.df$Freq/nobs
       indic.zeros=ifelse(hist.df$san.prop==0,T,F)
-      threshold=((2*base::log(2/delta))/(epsilon/nobs))+(1/nobs)
+      threshold=((2*base::log(2/delta))/(epsilon*nobs))+(1/nobs)
       #add laplace noise
       hist.df$san.prop=(hist.df$san.prop+
                           VGAM::rlaplace(nrow(hist.df),0,scale=sensitivity.multiplier*(1/(nobs*epsilon))))
